@@ -19,7 +19,8 @@ using System.IO;
 
 // http://dean.edwards.name/packer/
 
-/* Modified by James Treworgy to act as a standalone utility */
+/* Modified by James Treworgy to act as a standalone utility - sometime in 2009
+ */
 
 namespace JTC.SharpLinter
 {
