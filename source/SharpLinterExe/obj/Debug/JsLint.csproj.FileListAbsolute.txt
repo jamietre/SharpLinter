@@ -1,0 +1,12 @@
+C:\Users\jtreworgy\Downloads\JsLintDotNet\JsLintDotNet\JsLint\bin\Debug\JsLint.exe.config
+C:\Users\jtreworgy\Downloads\JsLintDotNet\JsLintDotNet\JsLint\bin\Debug\JsLint.exe
+C:\Users\jtreworgy\Downloads\JsLintDotNet\JsLintDotNet\JsLint\bin\Debug\JsLint.pdb
+C:\Users\jtreworgy\Downloads\JsLintDotNet\JsLintDotNet\JsLint\bin\Debug\JsLintDotNet.dll
+C:\Users\jtreworgy\Downloads\JsLintDotNet\JsLintDotNet\JsLint\bin\Debug\Noesis.Javascript.dll
+C:\Users\jtreworgy\Downloads\JsLintDotNet\JsLintDotNet\JsLint\bin\Debug\JsLintDotNet.pdb
+C:\Users\jtreworgy\Downloads\JsLintDotNet\JsLintDotNet\JsLint\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\jtreworgy\Downloads\JsLintDotNet\JsLintDotNet\JsLint\obj\Debug\JsLint.exe
+C:\Users\jtreworgy\Downloads\JsLintDotNet\JsLintDotNet\JsLint\obj\Debug\JsLint.pdb
+C:\VSProjects\SharpLinter\SharpLinterExe\bin\Debug\JsLint.exe.config
+C:\VSProjects\SharpLinter\SharpLinterExe\obj\Debug\JsLint.exe
+C:\VSProjects\SharpLinter\SharpLinterExe\obj\Debug\JsLint.pdb

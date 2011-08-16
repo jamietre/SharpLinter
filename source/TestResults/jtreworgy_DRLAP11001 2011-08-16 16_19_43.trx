@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="a8baec32-9328-4708-b6c7-5f0f875bab10" name="jtreworgy@DRLAP11001 2011-08-16 16:19:43" runUser="DRINTL\jtreworgy" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Local" id="535d67f2-abde-47ed-8632-e8236b4a7c05">
+    <Description>These are default test settings for a local test run.</Description>
+    <Deployment enabled="false" runDeploymentRoot="jtreworgy_DRLAP11001 2011-08-16 16_19_43">
+      <DeploymentItem filename="D:\VSProjects\SharpLinter\source\SharpLinter\bin\Debug\JTC.SharpLinter.dll" />
+    </Deployment>
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+  </TestSettings>
+  <Times creation="2011-08-16T16:19:43.8334713-04:00" queuing="2011-08-16T16:19:44.7275571-04:00" start="2011-08-16T16:19:44.8345678-04:00" finish="2011-08-16T16:19:54.8243136-04:00" />
+  <ResultSummary outcome="Error">
+    <Counters total="2" executed="1" error="0" failed="0" timeout="0" aborted="1" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="1" disconnected="0" warning="0" passed="0" completed="0" inProgress="0" pending="0" />
+    <RunInfos>
+      <RunInfo computerName="DRLAP11001" outcome="Error" timestamp="2011-08-16T16:19:54.8143126-04:00">
+        <Text>Test host process exited unexpectedly.</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="ConfigFile" storage="d:\vsprojects\sharplinter\source\sharplinter.test\bin\debug\jtc.sharplinter.test.dll" id="311b004a-0c35-0a1a-a65a-be5fcea666e1">
+      <Execution id="f1874cdb-7c40-4bbd-8a3b-8dee02b6aeae" />
+      <TestMethod codeBase="D:/VSProjects/SharpLinter/source/SharpLinter.Test/bin/Debug/JTC.SharpLinter.Test.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JTC.SharpLinter.Test.ConfigurationTests, JTC.SharpLinter.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="ConfigFile" />
+    </UnitTest>
+    <UnitTest name="Config" storage="d:\vsprojects\sharplinter\source\sharplinter.test\bin\debug\jtc.sharplinter.test.dll" id="60e71ec1-68c3-50e8-f004-f6769f3b8b15">
+      <Execution id="6b41a4ed-309b-4a29-9d8d-bf2046540267" />
+      <TestMethod codeBase="D:/VSProjects/SharpLinter/source/SharpLinter.Test/bin/Debug/JTC.SharpLinter.Test.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JTC.SharpLinter.Test.ConfigurationTests, JTC.SharpLinter.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="Config" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="311b004a-0c35-0a1a-a65a-be5fcea666e1" executionId="f1874cdb-7c40-4bbd-8a3b-8dee02b6aeae" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="60e71ec1-68c3-50e8-f004-f6769f3b8b15" executionId="6b41a4ed-309b-4a29-9d8d-bf2046540267" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="f1874cdb-7c40-4bbd-8a3b-8dee02b6aeae" testId="311b004a-0c35-0a1a-a65a-be5fcea666e1" testName="ConfigFile" computerName="DRLAP11001" duration="00:00:09.8887357" startTime="2011-08-16T16:19:44.9355779-04:00" endTime="2011-08-16T16:19:54.8243136-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Aborted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f1874cdb-7c40-4bbd-8a3b-8dee02b6aeae">
+    </UnitTestResult>
+    <UnitTestResult executionId="6b41a4ed-309b-4a29-9d8d-bf2046540267" testId="60e71ec1-68c3-50e8-f004-f6769f3b8b15" testName="Config" computerName="DRLAP11001" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="NotExecuted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6b41a4ed-309b-4a29-9d8d-bf2046540267">
+    </UnitTestResult>
+  </Results>
+</TestRun>

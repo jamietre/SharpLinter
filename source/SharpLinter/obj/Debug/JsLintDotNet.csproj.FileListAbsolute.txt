@@ -1,0 +1,6 @@
+C:\Users\jtreworgy\Downloads\JsLintDotNet\JsLintDotNet\JsLintDotNet\bin\Debug\JsLintDotNet.dll
+C:\Users\jtreworgy\Downloads\JsLintDotNet\JsLintDotNet\JsLintDotNet\bin\Debug\JsLintDotNet.pdb
+C:\Users\jtreworgy\Downloads\JsLintDotNet\JsLintDotNet\JsLintDotNet\bin\Debug\Noesis.Javascript.dll
+C:\Users\jtreworgy\Downloads\JsLintDotNet\JsLintDotNet\JsLintDotNet\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\jtreworgy\Downloads\JsLintDotNet\JsLintDotNet\JsLintDotNet\obj\Debug\JsLintDotNet.dll
+C:\Users\jtreworgy\Downloads\JsLintDotNet\JsLintDotNet\JsLintDotNet\obj\Debug\JsLintDotNet.pdb

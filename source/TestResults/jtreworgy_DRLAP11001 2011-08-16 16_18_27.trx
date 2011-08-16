@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="e70513d4-74ef-4dc4-bf7d-5a20d2420081" name="jtreworgy@DRLAP11001 2011-08-16 16:18:27" runUser="DRINTL\jtreworgy" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Local" id="535d67f2-abde-47ed-8632-e8236b4a7c05">
+    <Description>These are default test settings for a local test run.</Description>
+    <Deployment enabled="false" runDeploymentRoot="jtreworgy_DRLAP11001 2011-08-16 16_18_27">
+      <DeploymentItem filename="D:\VSProjects\SharpLinter\source\SharpLinter\bin\Debug\JTC.SharpLinter.dll" />
+    </Deployment>
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+  </TestSettings>
+  <Times creation="2011-08-16T16:18:27.7072911-04:00" queuing="2011-08-16T16:18:27.8943098-04:00" start="2011-08-16T16:18:27.9453149-04:00" finish="2011-08-16T16:18:28.2103414-04:00" />
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" error="0" failed="1" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" passed="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="Config" storage="d:\vsprojects\sharplinter\source\sharplinter.test\bin\debug\jtc.sharplinter.test.dll" id="60e71ec1-68c3-50e8-f004-f6769f3b8b15">
+      <Execution id="e7e94cac-663a-4f70-88c8-362734b5f6c7" />
+      <TestMethod codeBase="D:/VSProjects/SharpLinter/source/SharpLinter.Test/bin/Debug/JTC.SharpLinter.Test.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JTC.SharpLinter.Test.ConfigurationTests, JTC.SharpLinter.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="Config" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="60e71ec1-68c3-50e8-f004-f6769f3b8b15" executionId="e7e94cac-663a-4f70-88c8-362734b5f6c7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="e7e94cac-663a-4f70-88c8-362734b5f6c7" testId="60e71ec1-68c3-50e8-f004-f6769f3b8b15" testName="Config" computerName="DRLAP11001" duration="00:00:00.0263485" startTime="2011-08-16T16:18:27.9513155-04:00" endTime="2011-08-16T16:18:28.1563360-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e7e94cac-663a-4f70-88c8-362734b5f6c7">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.AreEqual failed. Expected:&lt;unused: true, maxerr: 100&gt;. Actual:&lt;&gt;. Default has no options set.</Message>
+          <StackTrace>   at JTC.SharpLinter.Test.ConfigurationTests.Config() in D:\VSProjects\SharpLinter\source\SharpLinter.Test\ConfigurationTests.cs:line 24
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+</TestRun>

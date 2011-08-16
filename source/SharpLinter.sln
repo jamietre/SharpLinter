@@ -1,0 +1,41 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpLinterExe", "SharpLinterExe\SharpLinterExe.csproj", "{7EB49A89-EB46-44E3-86EF-18CA98C93668}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpLinter", "SharpLinter\SharpLinter.csproj", "{63E74178-8088-4EFE-85BB-5A3F27651D75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpLinter.Test", "SharpLinter.Test\SharpLinter.Test.csproj", "{6562EDA8-207F-408C-AC33-97A69C1FBF2A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2272DBF8-43D8-4624-B7AA-3F30DB0DA735}"
+	ProjectSection(SolutionItems) = preProject
+		JsLint.vsmdi = JsLint.vsmdi
+		Local.testsettings = Local.testsettings
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = JsLint.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7EB49A89-EB46-44E3-86EF-18CA98C93668}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EB49A89-EB46-44E3-86EF-18CA98C93668}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EB49A89-EB46-44E3-86EF-18CA98C93668}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EB49A89-EB46-44E3-86EF-18CA98C93668}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63E74178-8088-4EFE-85BB-5A3F27651D75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63E74178-8088-4EFE-85BB-5A3F27651D75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63E74178-8088-4EFE-85BB-5A3F27651D75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63E74178-8088-4EFE-85BB-5A3F27651D75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6562EDA8-207F-408C-AC33-97A69C1FBF2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6562EDA8-207F-408C-AC33-97A69C1FBF2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6562EDA8-207F-408C-AC33-97A69C1FBF2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6562EDA8-207F-408C-AC33-97A69C1FBF2A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
