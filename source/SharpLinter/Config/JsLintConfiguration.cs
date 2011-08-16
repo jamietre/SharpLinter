@@ -28,10 +28,7 @@ namespace JTC.SharpLinter.Config
         #region public option methods
         public void SetGlobal(string varName)
         {
-            if (!PreDefined.Contains(varName))
-            {
-                PreDefined.Add(varName);
-            }
+             _Predefined.Add(varName);
         }
         public void SetFileExclude(string mask) {
             ExcludeFiles.Add(mask);
@@ -137,20 +134,27 @@ namespace JTC.SharpLinter.Config
                 return !HasOption("unused") ? true : (bool)Options["unused"];
             }
         }
-        public List<string> PreDefined
+        public IEnumerable<string> PreDefined
         {
             get
             {
-                List<string> list = new List<string>();
+                HashSet<string> list = new HashSet<string>();
                 if (HasOption("predef"))
                 {
                     string[] predef = GetOption<string>("predef").Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    list.AddRange(predef);
+                    foreach (var item in predef)
+                    {
+                        list.Add(item);
+                    }
+                }
+                foreach (var item in _Predefined)
+                {
+                    list.Add(item);
                 }
                 return list;
             }
         }
-
+        protected List<string> _Predefined = new List<string>();
         #endregion
 
         private static Tuple<string, Type> BoolOpt(string description)
@@ -327,7 +331,11 @@ namespace JTC.SharpLinter.Config
                 config.SetOption(kvp.Key, kvp.Value);    
             }
             foreach (var item in parser.GetValueSection("global",",")) {
-                config.SetGlobal(item);
+                string[] items = item.Split(':');
+                if (items.Length==0 || items.Length > 1 && Utility.IsTrueString(items[1]))
+                {
+                    config.SetGlobal(item);
+                }
             }
             foreach (var item in parser.GetValueSection("exclude","\n,"))
             {
@@ -425,10 +433,11 @@ namespace JTC.SharpLinter.Config
         }
         public string GlobalsToString()
         {
+            
             string result = String.Empty;
-            if (Options.ContainsKey("predef"))
+            foreach (var item in PreDefined) 
             {
-                result = ((string)Options["predef"]).Replace(" ", ",");
+                result +=(result==String.Empty ? String.Empty : ", ") + item;
             }
             return result;
         }

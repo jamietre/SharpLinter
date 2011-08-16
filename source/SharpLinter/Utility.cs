@@ -53,7 +53,7 @@ namespace JTC.SharpLinter
         /// <returns></returns>
         public static bool? StringToBool(string theString, bool? defaultValue)
         {
-            string lcaseString = (theString == null ? "" : theString.ToLower());
+            string lcaseString = (theString == null ? "" : theString.ToLower().Trim());
             if (lcaseString == "true" || lcaseString == "yes" || lcaseString == "y" || lcaseString == "1" || lcaseString == "on")
             {
                 return (true);

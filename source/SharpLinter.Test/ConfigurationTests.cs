@@ -56,6 +56,7 @@ namespace JTC.SharpLinter.Test
 
             Assert.AreEqual("browser: false, nomen: false, plusplus: false, forin: false, windows: true, laxbreak: true", config.OptionsToString(),"Got lint options from conf file");
 
+            Assert.AreEqual("jQuery: true, HTMLElement: true, $: true", config.GlobalsToString());
             Assert.AreEqual(config.ExcludeFiles.Count, 2, "Got 2 files");
             Assert.AreEqual("*.min.js", config.ExcludeFiles.ElementAt(0), "First file was right");
         }

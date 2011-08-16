@@ -18,6 +18,7 @@ namespace JTC.SharpLinter.Test
                 config.SetOption("bitwise");
                 config.SetOption("evil");
                 config.SetOption("eqeqeq");
+                config.SetOption("plusplus");
                 config.SetOption("forin");
                 config.SetOption("immed");
                 config.SetOption("newcap");
@@ -38,12 +39,12 @@ namespace JTC.SharpLinter.Test
 							@"var i, y; for (i = 0; i < 5; i++) console.Print(message + ' (' + i + ')'); number += i;",config);
 
             // original test was 4 errors - jshint defaults?
-			Assert.AreEqual(3, result.Errors.Count);
+			Assert.AreEqual(4, result.Errors.Count);
 
 			JsLintResult result2 = lint.Lint(
                             @"function annon() { var i, number; for (i = 0; i === 5; i++) { number += i; } }", config);
 
-			Assert.AreEqual(0, result2.Errors.Count);
+			Assert.AreEqual(1, result2.Errors.Count);
 
             JsLintResult result3 = lint.Lint(
                             @"function annon() { var i, number, x; for (i = 0; i == 5; i++) { number += i; } }", config);
@@ -84,10 +85,10 @@ namespace JTC.SharpLinter.Test
 			Assert.AreEqual(2, config.MaxErrors);
             Assert.AreEqual("unused: true, maxerr: 2, eqeqeq: true, evil: false, browser: true", config.OptionsToString());
 			Assert.AreEqual(true, config.ErrorOnUnused);
-			Assert.AreEqual(3, config.PreDefined.Count);
-			Assert.AreEqual("test1", config.PreDefined[0]);
-			Assert.AreEqual("TEST2", config.PreDefined[1]);
-			Assert.AreEqual("3", config.PreDefined[2]);
+			Assert.AreEqual(3, config.PreDefined.Count());
+			Assert.AreEqual("test1", config.PreDefined.ElementAt(0));
+            Assert.AreEqual("TEST2", config.PreDefined.ElementAt(1));
+			Assert.AreEqual("3", config.PreDefined.ElementAt(2));
 		}
 
 		[TestMethod]
@@ -98,8 +99,8 @@ namespace JTC.SharpLinter.Test
 			Assert.AreEqual(400, config.MaxErrors);
             Assert.AreEqual("unused: false, maxerr: 400, eqeqeq: true, evil: true, browser: false", config.OptionsToString());
 			Assert.AreEqual(false, config.ErrorOnUnused);
-			Assert.AreEqual(3, config.PreDefined.Count);
-			Assert.AreEqual("1", config.PreDefined[0]);
+			Assert.AreEqual(3, config.PreDefined.Count());
+			Assert.AreEqual("1", config.PreDefined.ElementAt(0));
 		}
 
 	}
