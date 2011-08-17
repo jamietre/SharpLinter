@@ -77,18 +77,16 @@ Each of the linting options can be specified in a configuration file as well (se
 
 A basic file is included. The file has up four sections. Each section is structured like:
 
-/*sectiontitle
-
-...
-
-sectiontitle*/
+    /*sectiontitle  
+    ...
+    sectiontitle*/
 
 
 Anything not found between these constructs will be ignores. Valid section names are jslint, global, exclude, and sharplinter. An example:
 
-// set global options
+    // set global options
 
-/*jslint 
+    /*jslint 
 	browser: true, 
 	wsh: true, 
 	laxbreak:true,
@@ -103,42 +101,39 @@ Anything not found between these constructs will be ignores. Valid section names
 	undef: true,
 	jquery: true
 	
-jslint*/
+    jslint*/
 
-// define some globals 
+    // define some globals 
 
-/*global 
+    /*global 
 	mynamespace,alert,confirm	
-global*/
+    global*/
 
-// define paths for file exclusions. Wild cards only work for the file name part of the path, not the 
-// folders. Pattern matching within the path is therefore very simple, but wildcard matching for file names works
+    // define paths for file exclusions. Wild cards only work for the file name part of the path, not the 
+    // folders. Pattern matching within the path is therefore very simple, but wildcard matching for file names works
 
-/*exclude
+    /*exclude
+        *.min.js
+        /temp/
+        /test/
+        /google-tracker.js
+        /thirdp/
+    exclude*/
 
-*.min.js
-/temp/
-/test/
-/google-tracker.js
-/thirdp/
+    // this section has only three options, as per below. The first two define a construct for ignoring blocks
+    // within files. The text used, when found tightly wrapped in a comment block like:
+       /*ignore-start*/
+           //...
+       /*ignore-end*/
+    // will cause everything between the markers to be ignored.
+    // The final option, ignorefile, if found anywhere in a script will cause the entire file to be ignored.
 
-exclude*/
+    /*sharplinter
+        ignorestart: ignore-start,
+        ignoreend: ignore-end,
+        ignorefile: lint-ignore-file
+    sharplinter*/
 
-// this section has only three options, as per below. The first two define a construct for ignoring blocks
-// within files. The text used, when found tightly wrapped in a comment block like:
-   /*ignore-start*/
-       //...
-   /*ignore-end*/
-// will cause everything between the markers to be ignored.
-// The final option, ignorefile, if found anywhere in a script will cause the entire file to be ignored.
-
-/*sharplinter
-
-ignorestart: ignore-start,
-ignoreend: ignore-end,
-ignorefile: lint-ignore-file
-
-sharplinter*/
 
 # Visual Studio Integration
 
