@@ -82,25 +82,24 @@ A basic file is included. The file has up four sections. Each section is structu
     sectiontitle*/
 
 
-Anything not found between these constructs will be ignores. Valid section names are jslint, global, exclude, and sharplinter. An example:
+Anything found between these constructs will be ignored. Valid section names are jslint, global, exclude, and sharplinter. An example:
 
     // set global options
 
     /*jslint 
-	browser: true, 
-	wsh: true, 
-	laxbreak:true,
-	evil: true,
-	eqeqeq: true,
-	curly: true,
-	forin: true,
-	immed: true,
-	newcap: true,
-	nomen: false,
-	onevar: true,
-	undef: true,
-	jquery: true
-	
+        browser: true, 
+        wsh: true, 
+        laxbreak:true,
+        evil: true,
+        eqeqeq: true,
+        curly: true,
+        forin: true,
+        immed: true,
+        newcap: true,
+        nomen: false,
+        onevar: true,
+        undef: true,
+        jquery: true	
     jslint*/
 
     // define some globals 
