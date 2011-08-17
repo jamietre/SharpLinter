@@ -12,7 +12,7 @@ namespace JTC.SharpLinter
 	/// <summary>
 	///  Constructs an object capable of linting javascript files and returning the result of JS Lint
 	/// </summary>
-    public class JsLinter
+    public class SharpLinter
     {
         private JavascriptContext _context;
         private object _lock = new Object();
@@ -42,11 +42,11 @@ namespace JTC.SharpLinter
             get;
             set;
         }
-        public JsLinter()
+        public SharpLinter()
         {
             Initialize(string.Empty);
         }
-        public JsLinter(string jsLintSource)
+        public SharpLinter(string jsLintSource)
         {
             Initialize(jsLintSource);
         }

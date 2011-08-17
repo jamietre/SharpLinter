@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Yahoo.Yui.Compressor;
+
 namespace JTC.SharpLinter
 {
     public class LinterECMAErrorReporter : EcmaScript.NET.ErrorReporter
@@ -34,6 +35,10 @@ namespace JTC.SharpLinter
             err.Character = offset;
             err.Reason = message;
             Errors.Add(err);
+        }
+        public void Clear()
+        {
+            Errors.Clear();
         }
     }
 }

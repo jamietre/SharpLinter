@@ -32,7 +32,7 @@ namespace JTC.SharpLinter.Test
 		public void TestMultipleCalls()
 		{
 
-            JsLinter lint = new JsLinter();
+            SharpLinter lint = new SharpLinter();
             var config = DefaultConfig;
             
             JsLintResult result = lint.Lint(
@@ -55,13 +55,13 @@ namespace JTC.SharpLinter.Test
 		[TestMethod]
 		public void TestMultipleDifferentOptions()
 		{
-			JsLinter lint = new JsLinter();
+			SharpLinter lint = new SharpLinter();
             JsLintConfiguration config = new JsLintConfiguration();
             config.SetOption("eqeqeq",true);
             config.SetOption("plusplus",true);
             
             JsLintResult result = lint.Lint(
-							@"function annon() { var i, number, x; for (i = 0; i === 5; i++) { number += ++i; } }",
+							@"function annon() { var i, number, x; for (i = 0; i == 5; i++) { number += ++i; } }",
 							config
                             );
 
@@ -83,7 +83,7 @@ namespace JTC.SharpLinter.Test
 			JsLintConfiguration config = JsLintConfiguration.ParseString("  maxerr : 2,eqeqeq,unused :    TRUE,predef : test1 TEST2   3 ,evil:false , browser : true");
 
 			Assert.AreEqual(2, config.MaxErrors);
-            Assert.AreEqual("unused: true, maxerr: 2, eqeqeq: true, evil: false, browser: true", config.OptionsToString());
+            Assert.AreEqual("maxerr: 2, eqeqeq: true, unused: true, evil: false, browser: true", config.OptionsToString());
 			Assert.AreEqual(true, config.ErrorOnUnused);
 			Assert.AreEqual(3, config.Globals.Count());
 			Assert.AreEqual("test1", config.Globals.ElementAt(0));
@@ -97,7 +97,7 @@ namespace JTC.SharpLinter.Test
 			JsLintConfiguration config = JsLintConfiguration.ParseString("  maxerr : 400,eqeqeq : true,unused :    FALSE,predef : 1 window alert,evil:true , browser : false");
 
 			Assert.AreEqual(400, config.MaxErrors);
-            Assert.AreEqual("unused: false, maxerr: 400, eqeqeq: true, evil: true, browser: false", config.OptionsToString());
+            Assert.AreEqual("maxerr: 400, eqeqeq: true, unused: false, evil: true, browser: false", config.OptionsToString());
 			Assert.AreEqual(false, config.ErrorOnUnused);
 			Assert.AreEqual(3, config.Globals.Count());
 			Assert.AreEqual("1", config.Globals.ElementAt(0));

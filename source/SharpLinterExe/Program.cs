@@ -5,7 +5,6 @@ using System.Text;
 using System.IO;
 using JTC.SharpLinter;
 using JTC.SharpLinter.Config;
-using Yahoo.Yui.Compressor;
 
 /*
  * 
@@ -17,12 +16,7 @@ using Yahoo.Yui.Compressor;
  */
 namespace ConsoleApplication1
 {
-    enum Packers
-    {
-        yui=1,
-        packer=2, 
-        best=3
-    }
+
     class Program
     {
         static void Main(string[] args)
@@ -52,7 +46,7 @@ namespace ConsoleApplication1
             bool packKeepHeader = false;
             string minimizeMask = String.Empty;
 
-            Packers packer = 0;
+            CompressorType compressorType = 0;
             
 			for (int i = 0; i < args.Length; i++ )
 			{
@@ -63,8 +57,9 @@ namespace ConsoleApplication1
 				switch (arg)
 				{
                     case "-p":
-                        
-                        if (!Enum.TryParse<Packers>(value,out packer)) {
+
+                        if (!Enum.TryParse<CompressorType>(value, out compressorType))
+                        {
                             Console.WriteLine(String.Format("Unknown pack option {0}", value));
                             return;
                         }
@@ -153,7 +148,7 @@ namespace ConsoleApplication1
                 configuration = new JsLintConfiguration();
             }
 
-            JsLinter lint = new JsLinter(jsLintSource);
+            SharpLinter lint = new SharpLinter(jsLintSource);
 
             // collect details to output at the end
             List<string> SummaryInfo = new List<string>();
@@ -183,47 +178,49 @@ namespace ConsoleApplication1
                     SummaryInfo.Add(String.Format("{0}(0): Lint found no errors.", file));
                 }
 
+                SharpCompressor compressor = new SharpCompressor();
                 if (YUIValidation)
                 {
+                    compressor.Clear();
+                    compressor.AllowEval = configuration.GetOption<bool>("evil");
+                    compressor.KeepHeader = packKeepHeader;
+                    compressor.CompressorType = compressorType;
 
-                    var reporter = new LinterECMAErrorReporter();
-                    Yahoo.Yui.Compressor.JavaScriptCompressor compressor;
-                    
-                    try
-                    {
-                        compressor = new JavaScriptCompressor(lint.Javascript, true, Encoding.UTF8,
-                        System.Globalization.CultureInfo.CurrentCulture,
-                        configuration.GetOption<bool>("evil"), reporter);
-                        string compressed = compressor.Compress();
-                    }
-                    catch
-                    {
-                    }
-                    
-                    hasErrors = reporter.Errors.Count > 0;
+                    hasErrors = compressor.YUITest(lint.Javascript);
                     
                     if (hasErrors)
                     {
-                        allErrors.AddRange(reporter.Errors);
-                        SummaryInfo.Add(String.Format("{0}(0): YUI compressor found {1} errors.", file, reporter.Errors.Count));
+                        allErrors.AddRange(compressor.Errors);
+                        SummaryInfo.Add(String.Format("{0}(0): YUI compressor found {1} errors.", file, compressor.ErrorCount));
                     }
                     else
                     {
                         SummaryInfo.Add(String.Format("{0}(0): YUI compressor found no errors.", file));
-                        if (minimizeOutput) {
-                            try {
-                                string target;
-                                string compressionResult;
-                                Minimize(file, minimizeMask, packer, packKeepHeader, out target, out compressionResult);
-                                SummaryInfo.Add(String.Format("{0}: Compressed to '{1}' ({2})", file, target, compressionResult));
-                            }
-                            catch (Exception e) 
+                    }
+                }
+
+                if (minimizeOutput) {
+                    compressor.Clear();
+                    compressor.Input = lint.Javascript;
+
+                    string target = MapFileName(file, minimizeMask);
+                    try
+                    {
+                        if (compressor.Minimize())
+                        {
+                            if (File.Exists(target))
                             {
-                                SummaryInfo.Add(String.Format("{0}: Unable to compress output to '{1}': {2}",file,MapFileName(file,minimizeMask),e.Message));
+                                File.Delete(target);
                             }
+                            File.WriteAllText(target, compressor.Output);
+                            SummaryInfo.Add(String.Format("{0}: Compressed to '{1}' ({2})", file, target, compressor.Statistics));
                         }
                     }
-
+                    
+                    catch (Exception e)
+                    {
+                        SummaryInfo.Add(String.Format("{0}: Unable to compress output to '{1}': {2}", file, target, e.Message));
+                    }
                 }
                 allErrors.Sort(LintDataComparer);
                 foreach (JsLintData error in allErrors)
@@ -231,8 +228,6 @@ namespace ConsoleApplication1
                     Console.WriteLine(string.Format("{0}({1}): ({2}) {3} at character {4}", file, error.Line, error.Source,error.Reason, error.Character));
                 }
             }
-
-
 
 
             // Output file-by-file results at end
@@ -248,62 +243,7 @@ namespace ConsoleApplication1
             }
         }
 
-        private static void Minimize(string path, string mask, Packers packer, bool keepHeader, out string target, out string result)
-        {
-            string compressedYui = String.Empty;
-            string compressedPacker = String.Empty;
-            string header = String.Empty;
-
-            string javascript = File.ReadAllText(path);
-            if (keepHeader)
-            {
-                int pos = javascript.IndexOf("/*");
-                int endPos = -1;
-                string leadin=String.Empty;
-                if (pos > 0)
-                {
-                    leadin = javascript.Substring(0, pos);
-                }
-                if (leadin.Trim() == string.Empty)
-                {
-                    endPos = javascript.IndexOf("*/", pos + 1);
-                    header = javascript.Substring(pos, endPos + 2) + Environment.NewLine;
-                    javascript = javascript.Substring(endPos + 2);
-
-                }
-                    
-
-
-            }
-            
-            if (packer == Packers.yui || packer==Packers.best) {
-
-                    var reporter = new LinterECMAErrorReporter();
-                    Yahoo.Yui.Compressor.JavaScriptCompressor compressor;
-                    compressor = new JavaScriptCompressor(javascript, true, Encoding.UTF8,
-                    System.Globalization.CultureInfo.CurrentCulture,
-                        true,
-                        reporter);
-                    compressedYui = compressor.Compress();
-            }
-            if (packer==Packers.packer || packer==Packers.best) {
-                    JavascriptPacker jsPacker = new JavascriptPacker(JavascriptPacker.PackerEncoding.None, false, false);
-
-                    compressedPacker = jsPacker.Pack(javascript);
-            }
-            Packers finalPacker = packer != Packers.best ? packer : 
-                    (compressedYui.Length < compressedPacker.Length ? Packers.yui  : Packers.packer);
-
-            string compressed = header + (packer == Packers.yui ? compressedYui : compressedPacker);
-
-            target = MapFileName(path, mask);
-            if (File.Exists(target))
-            {
-                File.Delete(target);
-            }
-            File.WriteAllText(target, compressed);
-            result = finalPacker.ToString() + ": " + javascript.Length + "/" + compressed.Length + ", " + Math.Round(100 * ((decimal)compressed.Length / (decimal)javascript.Length), 0) + "%";
-        }
+        
         private static string MapFileName(string path, string mask) {
             if (mask.OccurrencesOf("*")!=1)
             {
