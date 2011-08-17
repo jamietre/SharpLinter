@@ -27,7 +27,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## Summary
 
-SharpLinter is a command line tool to automate error-checking Javascript files. It produces output that is formatted for Visual Studio's output window, so clicking on a line will locate the file and line in the IDE.
+SharpLinter is a command line tool to automate error-checking Javascript files. It produces output that is formatted for 
+Visual Studio's output window, so clicking on a line will locate the file and line in the IDE.
+
+Each of the linting options can be specified in a configuration file as well (see below)
+
     
     SharpLinter [-f file.js] [-[r]d] /directory [-c sharplinter.conf] [-o options]
                 [-j jslint.js] [-jr jslint | jshint] [-y] [-p yui | packer | best] [-ph] [-k]
@@ -47,17 +51,24 @@ SharpLinter is a command line tool to automate error-checking Javascript files. 
     -c c:/sharplinter.conf          Load global lint configuration settings from c:/sharplinter.conf. Any 
                                     additional command-line settings or settings in the file will supercede
                                     the global settings.
-
+    -is lint-ignorestart            Define /*lint-ignorestart*/ as the beginning of an ignore block
+    -ie lint-ignoreend              Define /*lint-ignoreend*/ as the end of an ignore block
+    -if lint-ignorefile             Define /*lint-ignorefile*/ as a flag to skip the entire file
+    -jr jshint                      Assume that JSHint is being used for processing (other option: jslint).
+                                    This should not be necessary, SharpLinter will try to figure out which you 
+                                    are using from the code itself.
+    
     Minimizing 
     
     -p yui|packer|best *.min.js     When no errors are found, minimize to filename.min.js using Yahoo YUI
                                     compressor, Dean Edwards' JSPacker (without data compression), or
                                     whichever produces a smaller file
+    
     -ph                             Preserve the contents of the first content block of format /* ... */
                                     at the top of the minimized output. Must not have any non-whitespace
                                     before the opening comment tag.
     
-     Other
+     Miscellaneous
   
      -k                             Wait for a keystroke after finishing before exiting
 
