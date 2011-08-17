@@ -68,7 +68,18 @@ namespace JTC.SharpLinter
             }
 
         }
-
+        public static string BeforeIncluding(this string text, string find)
+        {
+            int index = text.IndexOf(find);
+            if (index < 0 || index == text.Length)
+            {
+                return (String.Empty);
+            }
+            else
+            {
+                return (text.Substring(0, index+find.Length));
+            }
+        }
         public static string Before(this string text, string find)
         {
             int index = text.IndexOf(find);
@@ -120,5 +131,40 @@ namespace JTC.SharpLinter
             return occurrences;
 
         }
+        public static string AddListItem(this string list, string value, string separator)
+        {
+            if (String.IsNullOrEmpty(value))
+            {
+                return list.Trim();
+            }
+            if (list == null)
+            {
+                list = String.Empty;
+            }
+            else
+            {
+                list = list.Trim();
+            }
+
+            int pos = (list + separator).IndexOf(value + separator);
+            if (pos < 0)
+            {
+                if (list.LastIndexOf(separator) == list.Length - separator.Length)
+                {
+                    // do not add separator - it already exists
+                    return list + value;
+                }
+                else
+                {
+                    return (list + (list == "" ? "" : separator) + value);
+                }
+            }
+            else
+            {
+                // already has value
+                return (list);
+            }
+        }
     }
+
 }

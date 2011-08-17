@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Noesis.Javascript">
-      <HintPath>..\References\Noesis.Javascript.dll</HintPath>
+      <HintPath>..\..\refs\Noesis.Javascript.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

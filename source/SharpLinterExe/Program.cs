@@ -193,7 +193,7 @@ namespace ConsoleApplication1
                     {
                         compressor = new JavaScriptCompressor(lint.Javascript, true, Encoding.UTF8,
                         System.Globalization.CultureInfo.CurrentCulture,
-                        !configuration.GetOption<bool>("evil"), reporter);
+                        configuration.GetOption<bool>("evil"), reporter);
                         string compressed = compressor.Compress();
                     }
                     catch

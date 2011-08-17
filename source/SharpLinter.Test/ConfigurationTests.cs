@@ -48,15 +48,15 @@ namespace JTC.SharpLinter.Test
         [TestMethod]
         public void ConfigFile()
         {
-            string configFile = "D:\\VSProjects\\SharpLinter\\source\\SharpLinterExe\\bin\\Debug\\jslint.test.conf";
-            
+            string configFile = Directory.GetCurrentDirectory().BeforeIncluding("\\source\\") + "SharpLinter.Test\\jslint.test.conf";
+      
             JsLintConfiguration config = new JsLintConfiguration();
 
             config.MergeOptions(configFile);
 
             Assert.AreEqual("browser: false, nomen: false, plusplus: false, forin: false, windows: true, laxbreak: true", config.OptionsToString(),"Got lint options from conf file");
 
-            Assert.AreEqual("jQuery: true, HTMLElement: true, $: true", config.GlobalsToString());
+            Assert.AreEqual("jQuery, HTMLElement, $", config.GlobalsToString());
             Assert.AreEqual(config.ExcludeFiles.Count, 2, "Got 2 files");
             Assert.AreEqual("*.min.js", config.ExcludeFiles.ElementAt(0), "First file was right");
         }

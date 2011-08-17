@@ -28,8 +28,9 @@ namespace JTC.SharpLinter.Config
         #region public option methods
         public void SetGlobal(string varName)
         {
-             _Predefined.Add(varName);
-        }
+            string predef = GetOption<string>("predef", String.Empty);
+            SetOption("predef",predef.AddListItem(varName," "));
+       }
         public void SetFileExclude(string mask) {
             ExcludeFiles.Add(mask);
         }
@@ -38,8 +39,10 @@ namespace JTC.SharpLinter.Config
         /// </summary>
         /// <param name="option"></param>
         /// <returns></returns>
-        
-        public T GetOption<T>(string option)
+        public T GetOption<T>(string option) {
+            return GetOption(option,default(T));
+        }
+        public T GetOption<T>(string option, T defaultValue)
         {
             option = option.Trim().ToLower();
             object value;
@@ -56,7 +59,7 @@ namespace JTC.SharpLinter.Config
             }
             else
             {
-                return default(T);
+                return defaultValue;
             }
         }
         public bool HasOption(string option)
@@ -134,7 +137,7 @@ namespace JTC.SharpLinter.Config
                 return !HasOption("unused") ? true : (bool)Options["unused"];
             }
         }
-        public IEnumerable<string> PreDefined
+        public IEnumerable<string> Globals
         {
             get
             {
@@ -144,17 +147,16 @@ namespace JTC.SharpLinter.Config
                     string[] predef = GetOption<string>("predef").Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (var item in predef)
                     {
-                        list.Add(item);
+                        yield return item;
                     }
                 }
-                foreach (var item in _Predefined)
+                else
                 {
-                    list.Add(item);
+                    yield break;
                 }
-                return list;
             }
         }
-        protected List<string> _Predefined = new List<string>();
+        
         #endregion
 
         private static Tuple<string, Type> BoolOpt(string description)
@@ -330,12 +332,9 @@ namespace JTC.SharpLinter.Config
             {
                 config.SetOption(kvp.Key, kvp.Value);    
             }
-            foreach (var item in parser.GetValueSection("global",",")) {
-                string[] items = item.Split(':');
-                if (items.Length==0 || items.Length > 1 && Utility.IsTrueString(items[1]))
-                {
-                    config.SetGlobal(item);
-                }
+            foreach (var kvp in parser.GetKVPSection("global"))
+            {
+                config.SetGlobal(kvp.Key);
             }
             foreach (var item in parser.GetValueSection("exclude","\n,"))
             {
@@ -435,7 +434,7 @@ namespace JTC.SharpLinter.Config
         {
             
             string result = String.Empty;
-            foreach (var item in PreDefined) 
+            foreach (var item in Globals) 
             {
                 result +=(result==String.Empty ? String.Empty : ", ") + item;
             }

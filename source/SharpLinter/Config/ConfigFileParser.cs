@@ -10,13 +10,20 @@ namespace JTC.SharpLinter.Config
     {
         private static char[] stringSep = new char[] { ',' };
         public string ConfigData { get; set; }
+        /// <summary>
+        /// Parses key/value data of the format key:value, key2:value2. If value is missing, the string "true" is
+        /// returned in its place, making this acceptable for mixed mode parsing.
+        /// </summary>
+        /// <param name="sectionName"></param>
+        /// <returns></returns>
         public IEnumerable<KeyValuePair<string, string>> GetKVPSection(string sectionName)
         {
             string[] list = GetSection(sectionName).Split(stringSep, StringSplitOptions.RemoveEmptyEntries);
             foreach (string item in list)
             {
                 string[] kvpArray = item.Split(':');
-                yield return new KeyValuePair<string, string>(kvpArray[0].Trim(), kvpArray[1].Trim());
+                yield return new KeyValuePair<string, string>(kvpArray[0].Trim(), 
+                    kvpArray.Length>1 ? kvpArray[1].Trim() : "true" );
             }
         }
         public IEnumerable<string> GetValueSection(string sectionName, string separators)
