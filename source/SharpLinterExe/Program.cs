@@ -23,19 +23,22 @@ namespace ConsoleApplication1
         {
 			if (args.Length == 0)
 			{
-				Console.WriteLine("SharpLinter -i file.js -[r]d /directory [-c sharplinter.conf] [-o options] [-j jslint.js] [-y] [-p yui | packer | best] [-ph] [-k] ");
+				Console.WriteLine("SharpLinter [-f file.js] [-[r]d] /directory [-c sharplinter.conf] [-o options]");
+                Console.WriteLine("            [-j jslint.js] [-jr jslint | jshint] [-y] [-p yui | packer | best] [-ph] [-k] ");
+                Console.WriteLine("            [-is text] [-ie text] [-if text]");
 				Console.WriteLine();
 				Console.Write("Options Format:");
 				Console.WriteLine(JsLintConfiguration.GetParseOptions());
 				Console.WriteLine();
 				Console.WriteLine("E.g.");
-				Console.WriteLine("JsLint -i input.js -i input2.js");
-				Console.WriteLine("JsLint -i input.js -o \"evil=False,eqeqeq,predef=Microsoft System\"");
+				Console.WriteLine("JsLint -f input.js -f input2.js");
+				Console.WriteLine("JsLint -f input.js -o \"evil=False,eqeqeq,predef=Microsoft System\"");
 				return;
 			}
 
-            JsLintConfiguration commandlineConfig = new JsLintConfiguration();
-            JsLintConfiguration globalConfig = null;
+            string commandlineConfig = String.Empty;
+            string globalConfigFile = String.Empty;
+            string excludeFiles = String.Empty;
 
             string jsLintSource = String.Empty;
             HashSet<PathInfo> FilePaths = new HashSet<PathInfo>();
@@ -45,6 +48,10 @@ namespace ConsoleApplication1
             bool minimizeOutput = false;
             bool packKeepHeader = false;
             string minimizeMask = String.Empty;
+            string ignoreStart = null;
+            string ignoreEnd = null;
+            string ignoreFile = null;
+            LinterType linterType = 0;
 
             CompressorType compressorType = 0;
             
@@ -56,6 +63,24 @@ namespace ConsoleApplication1
 				//string filter = null;
 				switch (arg)
 				{
+                    case "-if":
+                        ignoreFile = value;
+                        break;
+                    case "-is":
+                        ignoreStart = value;
+                        break;
+                    case "-ie":
+                        ignoreEnd = value;
+                        break;
+                    case "-jr":
+                        linterType = value=="jslint" ? LinterType.JSLint :
+                            (value=="jshint" ? LinterType.JSHint : 0);
+                        if (linterType == 0)
+                        {
+                            Console.WriteLine(String.Format("Unknown lint rule type {0}", value));
+                            return;
+                        }
+                        break;
                     case "-p":
 
                         if (!Enum.TryParse<CompressorType>(value, out compressorType))
@@ -74,26 +99,14 @@ namespace ConsoleApplication1
                         YUIValidation = true;
                         break;
                     case "-c":
-                        if (File.Exists(value))
-						{
-                            try
-                            {
-                                globalConfig = JsLintConfiguration.ParseConfigFile(File.ReadAllText(value));
-                            }
-                            catch(Exception e)
-                            {
-                                Console.WriteLine(e.Message);
-                                return;
-                            }
-						}
-						else
-						{
-							Console.WriteLine(String.Format("Cannot find global configuration file {0}", value));
-							return;
-						}
+                        if (!String.IsNullOrEmpty(globalConfigFile))
+                        {
+                            Console.WriteLine("Multiple config files specified.");
+                        }
+                        globalConfigFile = value;
                         i++;
 						break;
-					case "-i":
+					case "-f":
 						FilePaths.Add(new PathInfo(value,false));
                         i++;
 						break;
@@ -115,62 +128,99 @@ namespace ConsoleApplication1
                         i++;
 						break;
 					case "-o":
-						try
-						{
-                            commandlineConfig.MergeOptions(JsLintConfiguration.ParseString(value));
-						}
-						catch (Exception e)
-						{
-							Console.WriteLine(e.Message);
-							return;
-						}
+                        commandlineConfig = commandlineConfig.AddListItem(value, " ");
                         i++;
 						break;
                     case "-x":
-                        commandlineConfig.SetFileExclude(value);
+                       excludeFiles = excludeFiles.AddListItem(value," ");
                         i++;
                         break;
 				}
 			}
-
+            Console.WriteLine("Beginning processing at {0:MM/dd/yy H:mm:ss zzz}", DateTime.Now);
+            SharpLinter lint = new SharpLinter(jsLintSource);
             JsLintConfiguration configuration = new JsLintConfiguration();
-            if (globalConfig != null)
+
+            configuration.IgnoreStart = ignoreStart;
+            configuration.IgnoreEnd = ignoreEnd;
+            configuration.IgnoreFile = ignoreFile;
+
+            if (linterType == 0)
             {
-                configuration.MergeOptions(globalConfig);
+                linterType = lint.GuessLinterType();
+            }
+            configuration.LinterType = linterType;
+            Console.WriteLine("Using linter options for "+linterType.ToString(), DateTime.Now);
+            
+            if (!String.IsNullOrEmpty(globalConfigFile))
+            {
+                if (File.Exists(globalConfigFile))
+                {
+                    try
+                    {
+                        configuration.MergeOptions( JsLintConfiguration.ParseConfigFile(File.ReadAllText(globalConfigFile),linterType));
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                        goto exit;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine(String.Format("Cannot find global configuration file {0}", globalConfigFile));
+                    goto exit;
+                }
             }
             if (commandlineConfig != null)
             {
-                configuration.MergeOptions(commandlineConfig);
+                try
+                {
+                    configuration.MergeOptions(JsLintConfiguration.ParseString(commandlineConfig,linterType));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    goto exit;
+                }
+
             }
 
-            if (configuration == null)
-            {
-                configuration = new JsLintConfiguration();
-            }
-
-            SharpLinter lint = new SharpLinter(jsLintSource);
 
             // collect details to output at the end
             List<string> SummaryInfo = new List<string>();
 
-            Console.WriteLine("Beginning processing at {0:MM/dd/yy H:mm:ss zzz}",DateTime.Now);
+            
             Console.WriteLine("LINT options: " + configuration.OptionsToString());
             Console.WriteLine("LINT globals: " + configuration.GlobalsToString());
+            Console.WriteLine("Sharplint: ignorestart=" + configuration.IgnoreStart + ", ignoreend=" + configuration.IgnoreEnd);
+            Console.WriteLine();
 
             int fileCount = 0;
 
             List<JsLintData> allErrors = new List<JsLintData>();
+            
 
             foreach (string file in configuration.GetMatchedFiles(FilePaths))
             {
                 fileCount++;
-                lint.TargetPath = file;
+                string javascript = File.ReadAllText(file);
+                if (javascript.IndexOf("/*" + configuration.IgnoreFile + "*/") >= 0)
+                {
+                    continue;
+                }
+                lint.Javascript = javascript;
                 JsLintResult result = lint.Lint(configuration);
                 bool hasErrors = result.Errors.Count > 0;
 
                 if (hasErrors)
                 {
-                    allErrors.AddRange(result.Errors);
+                    foreach (JsLintData error in result.Errors)
+                    {
+                        error.FilePath = file;
+                        allErrors.Add(error);
+                    }
+                    
                     SummaryInfo.Add(String.Format("{0}(0): Lint found {1} errors.", file, result.Errors.Count));
                 }
                 else
@@ -190,6 +240,7 @@ namespace ConsoleApplication1
                     
                     if (hasErrors)
                     {
+                 
                         allErrors.AddRange(compressor.Errors);
                         SummaryInfo.Add(String.Format("{0}(0): YUI compressor found {1} errors.", file, compressor.ErrorCount));
                     }
@@ -206,12 +257,14 @@ namespace ConsoleApplication1
                     string target = MapFileName(file, minimizeMask);
                     try
                     {
-                        if (compressor.Minimize())
+                        //Delete no matter what - there should never be a mismatch between regular & min
+                        if (File.Exists(target))
                         {
-                            if (File.Exists(target))
-                            {
-                                File.Delete(target);
-                            }
+                            File.Delete(target);
+                        }
+
+                        if (!hasErrors && compressor.Minimize())
+                        {
                             File.WriteAllText(target, compressor.Output);
                             SummaryInfo.Add(String.Format("{0}: Compressed to '{1}' ({2})", file, target, compressor.Statistics));
                         }
@@ -223,20 +276,33 @@ namespace ConsoleApplication1
                     }
                 }
                 allErrors.Sort(LintDataComparer);
-                foreach (JsLintData error in allErrors)
-                {
-                    Console.WriteLine(string.Format("{0}({1}): ({2}) {3} at character {4}", file, error.Line, error.Source,error.Reason, error.Character));
-                }
+
             }
 
 
-            // Output file-by-file results at end
+            // Output file-by-file results at beginning
             foreach (string item in SummaryInfo)
             {
                 Console.WriteLine(item);
             }
-            Console.WriteLine("Finished processing at {0:MM/dd/yy H:mm:ss zzz}. Processed {1} files.", DateTime.Now,fileCount);
             
+
+            if (allErrors.Count > 0)
+            {
+                Console.WriteLine();
+                Console.WriteLine("Error Details:");
+                Console.WriteLine();
+
+                foreach (JsLintData error in allErrors)
+                {
+                    Console.WriteLine(string.Format("{0}({1}): ({2}) {3} at character {4}", error.FilePath, error.Line, error.Source, error.Reason, error.Character));
+                }
+            }
+            Console.WriteLine();
+            Console.WriteLine("Finished processing at {0:MM/dd/yy H:mm:ss zzz}. Processed {1} files.", DateTime.Now, fileCount);
+            
+            exit:
+
             if (readKey)
             {
                 Console.ReadKey();

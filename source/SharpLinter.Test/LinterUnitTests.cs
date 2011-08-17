@@ -14,6 +14,7 @@ namespace JTC.SharpLinter.Test
             get
             {
                 var config = new JsLintConfiguration();
+                config.LinterType = LinterType.JSHint;
                 config.SetOption("browser");
                 config.SetOption("bitwise");
                 config.SetOption("evil");
@@ -80,7 +81,7 @@ namespace JTC.SharpLinter.Test
 		[TestMethod]
 		public void TestArgumentParsing()
 		{
-			JsLintConfiguration config = JsLintConfiguration.ParseString("  maxerr : 2,eqeqeq,unused :    TRUE,predef : test1 TEST2   3 ,evil:false , browser : true");
+            JsLintConfiguration config = JsLintConfiguration.ParseString("  maxerr : 2,eqeqeq,unused :    TRUE,predef : test1 TEST2   3 ,evil:false , browser : true", LinterType.JSHint);
 
 			Assert.AreEqual(2, config.MaxErrors);
             Assert.AreEqual("maxerr: 2, eqeqeq: true, unused: true, evil: false, browser: true", config.OptionsToString());
@@ -94,7 +95,7 @@ namespace JTC.SharpLinter.Test
 		[TestMethod]
 		public void TestArgumentParsing2()
 		{
-			JsLintConfiguration config = JsLintConfiguration.ParseString("  maxerr : 400,eqeqeq : true,unused :    FALSE,predef : 1 window alert,evil:true , browser : false");
+			JsLintConfiguration config = JsLintConfiguration.ParseString("  maxerr : 400,eqeqeq : true,unused :    FALSE,predef : 1 window alert,evil:true , browser : false",LinterType.JSHint);
 
 			Assert.AreEqual(400, config.MaxErrors);
             Assert.AreEqual("maxerr: 400, eqeqeq: true, unused: false, evil: true, browser: false", config.OptionsToString());

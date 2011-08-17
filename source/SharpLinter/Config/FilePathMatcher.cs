@@ -26,25 +26,33 @@ namespace JTC.SharpLinter.Config
             Regex nameRegex=null;
             bool match=false;
             bool noPatterns = true;
-            foreach (string pattern in patterns)
+            
+            foreach (string path in names)
             {
-                noPatterns = false;
-                string cleanPattern = pattern.Replace("/", "\\");
-                string namePattern = FileNamePart(cleanPattern);
-
-                if (namePattern != String.Empty)
+                string cleanPath = path.Replace("/", "\\");
+                string fileNameOnly = FileNamePart(path);
+                foreach (string pattern in patterns)
                 {
-                    nameRegex = FindFilesPatternToRegex.Convert(namePattern);
-                }
-                foreach (string path in names)
-                {
-                    string cleanPath = path.Replace("/", "\\");
-                    match = MatchPathOnly(cleanPattern, cleanPath) || (namePattern != String.Empty && nameRegex.IsMatch(cleanPath));
+                    noPatterns = false;
+                    string cleanPattern = pattern.Replace("/", "\\");
+                    string namePattern = FileNamePart(cleanPattern);
+                    string pathPattern = PathPart(cleanPattern);
 
-                   if (match != exclude)
+                    if (namePattern != String.Empty)
                     {
-                        yield return path;
+                        nameRegex = FindFilesPatternToRegex.Convert(namePattern);
                     }
+
+                    
+                    match = (pathPattern == String.Empty ? true : MatchPathOnly(cleanPattern, cleanPath)) && (namePattern == String.Empty ? true : nameRegex.IsMatch(fileNameOnly));
+                    if (match)
+                    {
+                        break;
+                    }
+                }
+                if (match != exclude)
+                {
+                    yield return path;
                 }
             }
             if (noPatterns)
@@ -60,7 +68,12 @@ namespace JTC.SharpLinter.Config
             return pattern.Substring(pattern.Length - 1, 1) == "\\" ? String.Empty :
                 (pattern.IndexOf("\\") == -1 ? pattern : pattern.AfterLast("\\"));
         }
-
+        private static string PathPart(string pattern)
+        {
+            return pattern.Substring(pattern.Length - 1, 1) == "\\" ? pattern :
+                (pattern.IndexOf("\\") == -1 ? string.Empty : pattern.BeforeLast("\\"));
+        }
+        
         private static bool MatchPathOnly(string pattern, string path)
         {
             if (pattern.Substring(pattern.Length - 1, 1) != "\\")

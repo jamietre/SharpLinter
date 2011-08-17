@@ -49,14 +49,12 @@ namespace JTC.SharpLinter.Config
                 return String.Empty;
             }
 
-            int endPos = ConfigData.IndexOf("*/", pos);
+            int endPos = ConfigData.IndexOf(sectionName+"*/", pos);
             if (endPos < 0)
             {
-                throw new Exception("Config secition '" + sectionName + "' was not closed.");
+                throw new Exception("Config section '" + sectionName + "' was not closed.");
             }
             return ConfigData.SubstringBetween(pos + sectionName.Length + 2, endPos);
-
-
         }
 
 

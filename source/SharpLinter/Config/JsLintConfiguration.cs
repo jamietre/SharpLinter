@@ -6,7 +6,11 @@ using System.IO;
 
 namespace JTC.SharpLinter.Config
 {
-
+    public enum LinterType
+    {
+        JSLint=1,
+        JSHint=2
+    }
 	/// <summary>
 	///  Represents configuring the Js Lint(er)
 	/// </summary>
@@ -14,9 +18,13 @@ namespace JTC.SharpLinter.Config
 	{
 		public JsLintConfiguration()
 		{
-
+            LinterType = LinterType.JSHint;
 		}
-
+        public string IgnoreStart { get; set; }
+        public string IgnoreEnd { get; set; }
+        public string IgnoreFile { get; set; }
+        public LinterType LinterType
+        { get; set; }
         /// <summary>
         /// File masks that will be excluded from wildcard matches
         /// </summary>
@@ -86,13 +94,23 @@ namespace JTC.SharpLinter.Config
                     }
                     else
                     {
-                        val = Utility.StringToBool(value.ToString(), null);
-                        if (val == null)
+                        if (value == null)
                         {
-                            throw new Exception("Unable to interpret boolean value passed with option '" + option + "'");
+                            Options.Remove(option);
+                            return;
+                        }
+                        else
+                        {
+                            val = Utility.StringToBool(value.ToString(), null);
+                            if (val == null)
+                            {
+                                throw new Exception("Unable to interpret boolean value passed with option '" + option + "'");
+                            }
                         }
                     }
+
                     Options[option] = (bool)val;
+                    
                 }
                 else if (optInfo.Item2 == typeof(int))
                 {
@@ -163,44 +181,122 @@ namespace JTC.SharpLinter.Config
         {
             return Tuple.Create<string,Type>(description,typeof(bool));
         }
+        protected static Dictionary<string, Tuple<string, Type>> GetDescriptions(LinterType type)
+        {
+            switch (type)
+            {
+                case LinterType.JSHint:
+                    return DescriptionsHint;
+                case LinterType.JSLint:
+                    return DescriptionsLint;
+                default:
+                    throw new Exception("Unknown linter type.");
+            }
+        }
+        protected Dictionary<string,Tuple<string,Type>> Descriptions
+        {
+            get
+            {
+                if (_Descriptions ==null)  {
+                    _Descriptions = GetDescriptions(LinterType);
+                }
+                return _Descriptions;
+            }
+        }
+        private static Dictionary<string, Tuple<string, Type>> _Descriptions =null;
 		/// <summary>
 		///  Descriptions of each option, pulled from Js Lint
 		/// </summary>
-		protected static readonly Dictionary<string, Tuple<string,Type>> Descriptions = new Dictionary<string, Tuple<string,Type>>() {
+		protected static readonly Dictionary<string, Tuple<string,Type>> DescriptionsLint = new Dictionary<string, Tuple<string,Type>>() {
 					{ "adsafe", BoolOpt("if ADsafe should be enforced") },
-					{ "bitwise", BoolOpt("if bitwise operators should not be allowed") },
+					{ "bitwise", BoolOpt("allow (lint) or enforce (hint) use of bitwise operators") },
 					{ "browser", BoolOpt("if the standard browser globals should be predefined") },
 					{ "cap", BoolOpt("if upper case HTML should be allowed") },
 					{ "css", BoolOpt("if CSS workarounds should be tolerated") },
 					{ "debug", BoolOpt("if debugger statements should be allowed") },
 					{ "devel", BoolOpt("if logging should be allowed (console, alert, etc.)") },
-					{ "eqeqeq", BoolOpt("if === should be required") },
+					{ "eqeq", BoolOpt("tolerate != and ==") },
 					{ "es5", BoolOpt("if ES5 syntax should be allowed") },
 					{ "evil", BoolOpt("if eval should be allowed") },
-					{ "forin", BoolOpt("if for in statements must filter") },
+					{ "forin", BoolOpt("if unfiltered for in statements should be allowed.") },
 					{ "fragment", BoolOpt("if HTML fragments should be allowed") },
-					{ "immed", BoolOpt("if immediate invocations must be wrapped in parens") },
-					{ "laxbreak", BoolOpt("if line breaks should not be checked") },
-					{ "newcap", BoolOpt("if constructor names must be capitalized") },
-					{ "nomen", BoolOpt("if names should be checked") },
+                    { "maxerr", Tuple.Create<string,Type>("maximum number of errors",typeof(int)) },
+					{ "newcap", BoolOpt("tolerate initial caps on constructor functions") },
+					{ "nomen", BoolOpt("if names should not be checked for initial or trailing underbars") },
 					{ "on", BoolOpt("if HTML event handlers should be allowed") },
 					{ "onevar", BoolOpt("if only one var statement per function should be allowed") },
 					{ "passfail", BoolOpt("if the scan should stop on first error") },
-					{ "plusplus", BoolOpt("if increment/decrement should not be allowed") },
+                    { "predef" , Tuple.Create<string,Type>("space seperated list of predefined globals", typeof(string)) },
+					{ "plusplus", BoolOpt("if increment/decrement should be allowed") },
 					{ "regexp", BoolOpt("if the . should not be allowed in regexp literals") },
 					{ "rhino", BoolOpt("if the Rhino environment globals should be predefined") },
-					{ "undef", BoolOpt("if variables should be declared before used") },
-					{ "safe", BoolOpt("if use of some browser features should be restricted") },
-					{ "windows", BoolOpt("if MS Windows-specigic globals should be predefined") },
+					{ "safe", BoolOpt("if the safe subset rules are enforced.") },
+                    { "sub", BoolOpt("if subscript notation may be used for expressions better expressed in dot notation.") },
+                    { "sloppy", BoolOpt("if the ES5 'use strict'; pragma is not required. Do not use this pragma unless you know what you are doing.") },
 					{ "strict", BoolOpt("require the \"use strict\"; pragma") },
-					{ "sub", BoolOpt("if all forms of subscript notation are tolerated") },
+                    { "undef", BoolOpt("if variables and functions need not be declared before used. ") },
+                    { "unparam", BoolOpt("if warnings should not be given for unused parameters.") },
+                    { "unused" , BoolOpt("show unused local variables") },
+                    { "vars", BoolOpt("if multiple var statement per function should be allowed") },					
+                    { "windows", BoolOpt("if MS Windows-specigic globals should be predefined") },
 					{ "white", BoolOpt("if strict whitespace rules apply") },
 					{ "widget" , BoolOpt("if the Yahoo Widgets globals should be predefined") },
-                    { "maxerr", Tuple.Create<string,Type>("maximum number of errors",typeof(int)) },
-                    { "unused" , BoolOpt("show unused local variables") },
-                    { "predef" , Tuple.Create<string,Type>("space seperated list of predefined globals", typeof(string)) 
-
-                    }};
+                };
+         protected static readonly Dictionary<string, Tuple<string,Type>> DescriptionsHint = new Dictionary<string, Tuple<string,Type>>() {
+            { "asi" , BoolOpt("tolerate omission of semicolons - not recommended, may break when minified") },           
+            { "bitwise" , BoolOpt("(!) if bitwise operators should not be allowed") },
+            { "boss" , BoolOpt("allow the use of assignments inside structured elements") },
+            { "browser" , BoolOpt("if the standard browser globals should be predefined") },
+            { "couch" , BoolOpt("if CouchDB globals should be predefined") },
+            { "curly" , BoolOpt("require curly braces around structured blocks") },
+            { "debug", BoolOpt("if debugger statements should be allowed") },
+            { "devel", BoolOpt("if logging should be allowed (console, alert, etc.)") },
+            { "dojo" , BoolOpt("if Dojo Toolkit globals should be predefined") },
+            { "eqeqeq", BoolOpt("if === should be required") },           
+            { "eqnull" , BoolOpt("if == null comparisons should be tolerated") },
+            { "evil", BoolOpt("if eval should be allowed") },
+            { "es5", BoolOpt("if ES5 syntax should be allowed") },
+            { "expr" , BoolOpt("if ExpressionStatement should be allowed as Programs") },
+            { "forin", BoolOpt("(!) if for in statements must filter") },
+            { "globalstrict" , BoolOpt("if global \"use strict\"; should be allowed (also enables 'strict')") },
+            { "immed", BoolOpt("if immediate invocations must be wrapped in parens") },
+            { "iterator" , BoolOpt("if the `__iterator__` property should be disallowed") },
+            { "jquery" , BoolOpt("if jQuery globals should be predefined") },
+            { "lastsemic" , BoolOpt("if semicolons may be ommitted for the trailing statements inside of a one-line blocks.") },
+            { "latedef" , BoolOpt("if the use before definition should not be tolerated") },
+            { "laxbreak", BoolOpt("if line breaks should not be checked") },
+            { "loopfunc" , BoolOpt("if functions should be allowed to be defined within loops") },
+            { "maxerr", Tuple.Create<string,Type>("maximum number of errors",typeof(int)) },
+            { "mootools" , BoolOpt("if MooTools globals should be predefined") },
+            { "newcap" , BoolOpt("if constructor names must be capitalized") },
+            { "noarg" , BoolOpt("if arguments.caller and arguments.callee should be disallowed") },
+            { "node" , BoolOpt("if the Node.js environment globals should be predefined") },
+            { "noempty" , BoolOpt("if empty blocks should be disallowed") },
+            { "nonew" , BoolOpt("if using \"new\" for side-effects should be disallowed") },
+            { "nonstandard" , BoolOpt("if non-standard (but widely adopted) globals should be predefined") },
+            { "nomen", BoolOpt("(!) if names should be checked for initial or trailing underbars") },
+            { "onevar" , BoolOpt("f only one var statement per function should be allowed") },
+            { "onecase" , BoolOpt("if one case switch statements should be allowed") },
+            { "passfail" , BoolOpt("if the scan should stop on first error") },
+            { "plusplus" , BoolOpt("(!) if increment/decrement should not be allowed") },
+            { "predef" , Tuple.Create<string,Type>("space seperated list of predefined globals", typeof(string)) },
+            { "proto" , BoolOpt("if the `__proto__` property should be disallowed") },
+            { "prototypejs" , BoolOpt("if Prototype and Scriptaculous globals should be predefined") },
+            { "regexdash" , BoolOpt("if unescaped last dash (-) inside brackets should be tolerated") },
+            { "regexp" , BoolOpt("if the . should not be allowed in regexp literals") },
+            { "rhino" , BoolOpt("if the Rhino environment globals should be predefined") },
+            { "scripturl" , BoolOpt("if script-targeted URLs should be tolerated") },
+            { "strict" , BoolOpt("require the \"use strict\"; pragma") },
+            { "sub" , BoolOpt("if all forms of subscript notation are tolerated") },
+            { "supernew" , BoolOpt("if \"new function () { ... };\" and \"new Object;\"  should be tolerated") },
+            { "shadow" , BoolOpt("if variable shadowing should be tolerated") },
+            { "trailing" , BoolOpt("if trailing whitespace rules apply") },
+            { "undef" , BoolOpt("if variables should be declared before used") },
+            { "unused" , BoolOpt("show unused local variables") },
+            { "validthis" , BoolOpt("if \"this\" inside a non-constructor function is valid") },
+            { "white" , BoolOpt("if strict whitespace rules apply") },
+            { "wsh" , BoolOpt("f the Windows Scripting Host environment globals should be predefined") },
+            };
 
 		/// <summary>
 		///  Returns human readable text description of what the Parse function will process
@@ -214,8 +310,18 @@ namespace JTC.SharpLinter.Config
             //returner.AppendLine("maxerr  : Number - maximum number of errors");
             //returner.AppendLine("predef  : String - space seperated list of predefined globals");
             //returner.AppendLine("unused  : Boolean - If true, errors on unused local vars")m,
+            returner.AppendLine("JSLINT options:");
+            returner.AppendLine();
+            AddDescriptionGroup(DescriptionsLint, returner);
 
-			foreach (var optInfo in Descriptions)
+            returner.AppendLine("JSHINT options. Options that fuction opposite their JSLint counterpart are marked with (!)");
+            returner.AppendLine();
+            AddDescriptionGroup(DescriptionsHint, returner);
+
+			return returner.ToString();
+		}
+        protected static void AddDescriptionGroup(Dictionary<string,Tuple<string,Type>> dictionary, StringBuilder returner) {
+            			foreach (var optInfo in dictionary)
 			{
 				returner.AppendFormat("{0} : ({1}) {1}", optInfo.Key,
                     optInfo.Value.Item2.ToString().AfterLast("."),
@@ -223,8 +329,7 @@ namespace JTC.SharpLinter.Config
 				returner.AppendLine();
 			}
 
-			return returner.ToString();
-		}
+        }
         /// <summary>
         /// Merges the options from another config object into this one. The new options supercede if the same are specified.
         /// </summary>
@@ -240,11 +345,24 @@ namespace JTC.SharpLinter.Config
             {
                 ExcludeFiles.Add(file);
             }
+            if (configuration.IgnoreStart != null)
+            {
+                IgnoreStart = configuration.IgnoreStart;
+            }
+            if (configuration.IgnoreEnd != null)
+            {
+                IgnoreEnd = configuration.IgnoreEnd;
+            }
+            if (configuration.IgnoreFile != null)
+            {
+                IgnoreFile = configuration.IgnoreFile;
+            }
+
         }
         public void MergeOptions(string configFile)
         {
             string data= File.ReadAllText(configFile);
-            JsLintConfiguration config = ParseConfigFile(data);
+            JsLintConfiguration config = ParseConfigFile(data,LinterType);
             MergeOptions(config);
             //ConfigFileParser parser = new ConfigFileParser();
             
@@ -263,7 +381,7 @@ namespace JTC.SharpLinter.Config
         }
         public IEnumerable<string> GetMatchedFiles(IEnumerable<PathInfo> paths)
         {
-            
+            bool hasItems = false;
             foreach (var item in paths)
             {
                 string value =item.Path;
@@ -279,7 +397,8 @@ namespace JTC.SharpLinter.Config
                     // perhaps its a file?
                     if (!File.Exists(value))
                     {
-                        throw new ArgumentException(string.Format("File or directory does not exist: {0}", value));
+                        Console.WriteLine(string.Format("Ignoring missing file or directory: {0}", value));
+                        continue;
                     }
                     else
                     {
@@ -300,20 +419,32 @@ namespace JTC.SharpLinter.Config
                     }
                     else
                     {
-                        files = di.GetFiles(filter);
+                        files = di.GetFiles();
                     }
 
-                    
                     List<string> allFiles = new List<string>();
                     foreach (FileInfo fi in files)
                     {
                         allFiles.Add(fi.FullName);
                     }
-                    foreach (string matchedFile in FilePathMatcher.MatchFiles(ExcludeFiles,allFiles, true)) {
+
+                    if (item.Recurse)
+                    {
+                        directorys.AddRange(di.GetDirectories());
+                    }
+                    
+                    
+                    foreach (string matchedFile in FilePathMatcher.MatchFiles(ExcludeFiles, allFiles, true))
+                    {
                         yield return matchedFile;
                     }
-                }
 
+
+                }
+            }
+            if (!hasItems)
+            {
+                yield break;
             }
         }
 
@@ -322,11 +453,12 @@ namespace JTC.SharpLinter.Config
         /// </summary>
         /// <param name="configFileData"></param>
         /// <returns></returns>
-        public static JsLintConfiguration ParseConfigFile(string configFileData)
+        public static JsLintConfiguration ParseConfigFile(string configFileData, LinterType linterType)
         {
             JsLintConfiguration config = new JsLintConfiguration();
-
+            config.LinterType = linterType;
             ConfigFileParser parser = new ConfigFileParser();
+
             parser.ConfigData = configFileData;
             foreach (var kvp in parser.GetKVPSection("jslint"))
             {
@@ -340,6 +472,23 @@ namespace JTC.SharpLinter.Config
             {
                 config.SetFileExclude(item);
             }
+            foreach (var item in parser.GetKVPSection("sharplinter"))
+            {
+                switch (item.Key.ToLower())
+                {
+                    case "ignorestart":
+                        config.IgnoreStart = item.Value;
+                        break;
+                    case "ignoreend":
+                        config.IgnoreEnd = item.Value;
+                        break;
+                    case "ignorefile":
+                        config.IgnoreFile = item.Value;
+                        break;
+                    default:
+                        throw new Exception("Unknown sharpLinter option '" + item.Key + "'");
+                }
+            }
             return config;
         }
 
@@ -348,10 +497,10 @@ namespace JTC.SharpLinter.Config
 		/// </summary>
 		/// <param name="s"></param>
 		/// <returns></returns>
-		public static JsLintConfiguration ParseString(string s)
+		public static JsLintConfiguration ParseString(string s, LinterType type)
 		{
 			JsLintConfiguration returner = new JsLintConfiguration();
-
+            returner.LinterType = type;
 			// if there are no options we return an empty default object
 			if (!string.IsNullOrWhiteSpace(s))
 			{
@@ -368,14 +517,7 @@ namespace JTC.SharpLinter.Config
 					// test if it is a single value without assigment ("evil" == "evil:true")
 					if (optionValue.Length == 1)
 					{
-						if (optionValue[0].Trim() == "unused")
-						{
-							returner.SetOption("unused",true);
-						}
-						else
-						{
-                            returner.SetOption(optionValue[0], true);
-						}
+                        returner.SetOption(optionValue[0], true);
 					}
 					else if (optionValue.Length == 2)
 					{
@@ -407,9 +549,10 @@ namespace JTC.SharpLinter.Config
                 object value = kvp.Value;
                 if (kvp.Key == "predef")
                 {
-                    value = ((string)kvp.Value).Trim().Replace(" ", ",");
+                   // value = ((string)kvp.Value).Trim().Replace(" ", ",");
+                    value = ((string)kvp.Value).Split(' ');
                 }
-                returner[kvp.Key] = value.ToString();
+                returner[kvp.Key] = value;
 			}			
 
 			return returner;

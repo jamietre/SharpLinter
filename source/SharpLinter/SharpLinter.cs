@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using Noesis.Javascript;
@@ -16,23 +18,6 @@ namespace JTC.SharpLinter
     {
         private JavascriptContext _context;
         private object _lock = new Object();
-
-
-        /// <summary>
-        ///  The path to the target of the linting.
-        /// </summary>
-        public string TargetPath
-        { 
-            get {
-                return _TargetPath;
-            } 
-            set
-            {
-                _TargetPath = value;
-                Javascript = File.ReadAllText(value);
-            } 
-        }
-        private string _TargetPath = null;
       
         /// <summary>
         /// String of the javascript to be validated
@@ -41,6 +26,17 @@ namespace JTC.SharpLinter
         {
             get;
             set;
+        }
+        private List<bool> LineExclusion;
+
+
+        /// <summary>
+        /// The script that gets run
+        /// </summary>
+        public string JSLint
+        {
+            get;
+            protected set;
         }
         public SharpLinter()
         {
@@ -54,7 +50,7 @@ namespace JTC.SharpLinter
         {
 
             _context = new JavascriptContext();
-			string jslint = "";
+			
             if (String.IsNullOrEmpty(jsLintSource))
             {
 
@@ -64,7 +60,7 @@ namespace JTC.SharpLinter
                 {
                     using (StreamReader sr = new StreamReader(jslintStream))
                     {
-                        jslint = sr.ReadToEnd();
+                        JSLint = sr.ReadToEnd();
                     }
                 }
             }
@@ -74,22 +70,31 @@ namespace JTC.SharpLinter
                 {
                     throw new ArgumentException("'" + jsLintSource + "' is not a valid file path.");
                 } else {
-                    jslint = File.ReadAllText(jsLintSource);
+                    JSLint = File.ReadAllText(jsLintSource);
                 }
             }
-            
-            _context.Run(jslint);
+
+            _context.Run(JSLint);
 
             _context.Run(
                 @"lintRunner = function (dataCollector, javascript, options) {
                     JSHINT(javascript,options);
+                    
                     var data = JSHINT.data();
                     if  (data) {
                         dataCollector.ProcessData(data);
                     }
                 };");
         }
-
+        public LinterType GuessLinterType()
+        {
+            if (JSLint.IndexOf("var JSHINT = (function () {") > 0)
+            {
+                return LinterType.JSHint;
+            } else {
+                return LinterType.JSLint;
+            }
+        }
 		public JsLintResult Lint()
 		{
 			return Lint(new JsLintConfiguration());
@@ -105,28 +110,79 @@ namespace JTC.SharpLinter
         }
         public JsLintResult Lint(JsLintConfiguration configuration)
         {
-			if (string.IsNullOrEmpty(Javascript))
-			{
-				throw new ArgumentNullException("javascript");
-			}
+			
 
 			if (configuration == null)
 			{
 				throw new ArgumentNullException("configuration");
 			}
 
+            bool hasSkips=false;
+
             lock (_lock)
             {
+
 				LintDataCollector dataCollector = new LintDataCollector(configuration.GetOption<bool>("unused"));
+
+                if (!String.IsNullOrEmpty(configuration.IgnoreStart) && !String.IsNullOrEmpty(configuration.IgnoreEnd))
+                {
+                    LineExclusion = new List<bool>();
+                    using (StringReader reader = new StringReader(Javascript))
+                    {
+                        string text;
+                        int line = 0;
+                        int startSkipLine = 0;
+                        bool skipping = false;
+                        while ((text = reader.ReadLine()) != null)
+                        {
+                            line++;
+                            if (text.IndexOf(skipping ? configuration.IgnoreEnd : configuration.IgnoreStart) >= 0)
+                            {
+                                if (!skipping)
+                                {
+                                    startSkipLine = line;
+                                    skipping = true;
+                                    hasSkips = true;
+                                }
+                                else
+                                {
+                                    
+                                    skipping = false;
+                                }
+                            }
+                            LineExclusion.Add(skipping);
+                        }
+                    }
+                }
+                if (string.IsNullOrEmpty(Javascript))
+			    {
+                    JsLintData err = new JsLintData();
+                    err.Line=0;
+                    err.Character=0;
+                    err.Reason="The file was empty.";
+                    dataCollector.Errors.Add(err);
+			    }
                 // Setting the externals parameters of the context
 				_context.SetParameter("dataCollector", dataCollector);
                 _context.SetParameter("javascript", Javascript);
 				_context.SetParameter("options", configuration.ToJsOptionVar());
 
+
                 // Running the script
                 _context.Run("lintRunner(dataCollector, javascript, options);");
 
-                JsLintResult result = new JsLintResult() { Errors = dataCollector.Errors };
+                JsLintResult result = new JsLintResult();
+                if (!hasSkips) {
+                    result.Errors = dataCollector.Errors;
+                } else {
+                    result.Errors = new List<JsLintData>();
+                    foreach (var error in dataCollector.Errors) {
+                        if (!LineExclusion[error.Line - 1])
+                        {
+                            result.Errors.Add(error);
+                        }
+                    }
+                }
 
                 return result;
             }
@@ -146,6 +202,7 @@ namespace JTC.SharpLinter
 			{
 				_processUnuseds = processUnuseds;
 			}
+            public object predef { get; set; }
 
 			public void ProcessData(object data)
 			{

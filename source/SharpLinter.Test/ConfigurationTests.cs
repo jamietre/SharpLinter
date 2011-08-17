@@ -54,7 +54,7 @@ namespace JTC.SharpLinter.Test
 
             config.MergeOptions(configFile);
 
-            Assert.AreEqual("browser: false, nomen: false, plusplus: false, forin: false, windows: true, laxbreak: true", config.OptionsToString(),"Got lint options from conf file");
+            Assert.AreEqual("wsh: true, laxbreak: true", config.OptionsToString(), "Got lint options from conf file");
 
             Assert.AreEqual("jQuery, HTMLElement, $", config.GlobalsToString());
             Assert.AreEqual(config.ExcludeFiles.Count, 2, "Got 2 files");
