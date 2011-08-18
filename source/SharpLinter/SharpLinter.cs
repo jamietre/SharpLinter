@@ -66,12 +66,7 @@ namespace JTC.SharpLinter
             }
             else
             {
-                if (!File.Exists(jsLintSource))
-                {
-                    throw new ArgumentException("'" + jsLintSource + "' is not a valid file path.");
-                } else {
-                    JSLint = File.ReadAllText(jsLintSource);
-                }
+                JSLint = jsLintSource;
             }
 
             _context.Run(JSLint);
@@ -86,15 +81,7 @@ namespace JTC.SharpLinter
                     }
                 };");
         }
-        public LinterType GuessLinterType()
-        {
-            if (JSLint.IndexOf("var JSHINT = (function () {") > 0)
-            {
-                return LinterType.JSHint;
-            } else {
-                return LinterType.JSLint;
-            }
-        }
+
 		public JsLintResult Lint()
 		{
 			return Lint(new JsLintConfiguration());

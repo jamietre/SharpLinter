@@ -54,6 +54,7 @@
     <Compile Include="Config\FilePathMatcher.cs" />
     <Compile Include="Config\JsLintConfiguration.cs" />
     <Compile Include="Config\PathInfo.cs" />
+    <Compile Include="SharpLinterBatch.cs" />
     <Compile Include="ECMAErrorReporter.cs" />
     <Compile Include="SharpCompressor.cs" />
     <Compile Include="JsLintData.cs" />

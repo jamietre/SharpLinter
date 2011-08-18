@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Yahoo.Yui.Compressor;
+using System.IO;
 
 namespace JTC.SharpLinter
 {
@@ -24,8 +25,6 @@ namespace JTC.SharpLinter
         public void Warning(string message, string sourceName, int line, string lineSource, int lineOffset)
         {
             AddErrorFor(line, lineOffset, "Warning: " + message);
-            
-            
         }
         protected void AddErrorFor(int line, int offset, string message)
         {
@@ -33,7 +32,20 @@ namespace JTC.SharpLinter
             err.Source = "yui";
             err.Line = Math.Max(0,line);
             err.Character = offset;
-            err.Reason = message;
+            using (StringReader reader = new StringReader(message))
+            {
+                string text;
+                int lineNum = 0;
+                while ((text = reader.ReadLine()) != null)
+                {
+                    if (lineNum != 0)
+                    {
+                        text = Environment.NewLine + "    " + text;
+                    }
+                    err.Reason += text;
+                    lineNum++;
+                }
+            }
             Errors.Add(err);
         }
         public void Clear()

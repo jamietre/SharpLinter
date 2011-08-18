@@ -14,7 +14,6 @@ namespace JTC.SharpLinter.Test
             get
             {
                 var config = new JsLintConfiguration();
-                config.LinterType = LinterType.JSHint;
                 config.SetOption("browser");
                 config.SetOption("bitwise");
                 config.SetOption("evil");

@@ -30,6 +30,27 @@ namespace JTC.SharpLinter
                 return (text.Substring(index + find.Length));
             }
         }
+        /// <summary>
+        /// Removes /r /n /t and  spaces
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static string RemoveWhitespace(this string text)
+        {
+            int pos=-1;
+            int len=text.Length;
+            HashSet<char> removeList = new HashSet<char>("\r\n\t ");
+            StringBuilder output = new StringBuilder();
+            while (++pos < len)
+            {
+                if (!removeList.Contains(text[pos]))
+                {
+                    output.Append(text[pos]);
+                }
+                
+            }
+            return output.ToString();
+        }
     }
     public static class Utility
     {

@@ -42,13 +42,14 @@ namespace JTC.SharpLinter
             catch
             {
             }
-            return Success;
+            return Reporter.Errors.Count==0;
 
 
         }
         public void Clear()
         {
             Reporter.Clear();
+            CompressorType = CompressorType.best;
             Input = null;
             Statistics = null;
             //Input = null;
@@ -89,6 +90,10 @@ namespace JTC.SharpLinter
         {
             if (String.IsNullOrEmpty(Input)) {
                 throw new Exception("Input must be specified.:");
+            }
+            if (CompressorType == 0)
+            {
+                throw new Exception("No compressor type specified.");
             }
             string compressedYui = String.Empty;
             string compressedPacker = String.Empty;
@@ -133,9 +138,9 @@ namespace JTC.SharpLinter
             CompressorType finalPacker = CompressorType != CompressorType.best ? CompressorType :
                     (compressedYui.Length < compressedPacker.Length ? CompressorType.yui : CompressorType.packer);
 
-            string compressed = header + (CompressorType == CompressorType.yui ? compressedYui : compressedPacker);
+            Output = header + (CompressorType == CompressorType.yui ? compressedYui : compressedPacker);
 
-            Statistics = finalPacker.ToString() + ": " + javascript.Length + "/" + compressed.Length + ", " + Math.Round(100 * ((decimal)compressed.Length / (decimal)javascript.Length), 0) + "%";
+            Statistics = finalPacker.ToString() + ": " + javascript.Length + "/" + Output.Length + ", " + Math.Round(100 * ((decimal)Output.Length / (decimal)javascript.Length), 0) + "%";
             return Success;
         }
 

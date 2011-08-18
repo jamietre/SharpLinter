@@ -18,13 +18,106 @@ namespace JTC.SharpLinter.Config
 	{
 		public JsLintConfiguration()
 		{
-            LinterType = LinterType.JSHint;
+            LinterType = 0;
+            CompressorType = CompressorType.best;
 		}
+        /// <summary>
+        /// The javascript code that will be used to parse the input file. 
+        /// </summary>
+        public string JsLintCode {
+            get { return _JsLintCode; }
+            set
+            {
+                JsLintVersion="Unknown (minimized source?)";
+                if (value.IndexOf("var JSHINT") > 0)
+                {
+                    LinterType = LinterType.JSHint;
+                    JsLintVersion = "JSHINT builds do not include a date or version number.";
+                }
+                else if (value.IndexOf("var JSLINT") > 0)
+                {
+                    LinterType = LinterType.JSLint;
+                    bool useNextLine = false;
+                    using (StringReader reader = new StringReader(value))
+                    {
+                        string line;
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            if (useNextLine)
+                            {
+                                JsLintVersion = line.AfterLast("//");
+                                break;
+                            }
+                            if (line == "// jslint.js")
+                            {
+                                useNextLine = true;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    throw new Exception("What is this code you are trying to use? It does not appear to be either JSHINT or JSLINT.");
+                }
+                _JsLintCode = value;
+                GetOptionsFromCode();
+            }
+        }
+        public string JsLintVersion
+        {
+            get;
+            set;
+        }
+        protected string _JsLintCode;
+        public string OutputFormat
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// Be verbose
+        /// </summary>
+        public bool Verbose { get; set; }
+        /// <summary>
+        /// Minimize the JS file and rewrite if no errors are reported using "MinimizeFileNameMask" to create a new file name
+        /// </summary>
+        public bool MinimizeOnSuccess { get; set; }
+        /// <summary>
+        /// When minimizing, pass the first comment block /* ... */ through to the output
+        /// </summary>
+        public bool MinimizeKeepHeader { get; set; }
+        /// <summary>
+        /// A mask to create the new filename, e.g. *.min.js
+        /// </summary>
+        public string MinimizeFilenameMask { get; set; }
+        /// <summary>
+        /// A string used to identify a block to skip parsing inside a javascript file, for example, if this value is "jslint-ignore-start",
+        /// then the string /*jslint-ignore-start*/ will identify the start of an ignore block
+        /// </summary>
         public string IgnoreStart { get; set; }
+        /// <summary>
+        /// The type of Javascript compressor to use
+        /// </summary>
+        public CompressorType CompressorType { get; set; }
+        /// <summary>
+        /// A string used to identify a block to skip parsing inside a javascript file, for example, if this value is "jslint-ignore-end",
+        /// then the string /*jslint-ignore-end*/ will identify the end of an ignore block
+        /// </summary>
         public string IgnoreEnd { get; set; }
+        /// <summary>
+        /// A string used to indicate that the entire file should be ignored, e.g, if this value is "jslint-ignore-end" then the comment
+        /// /*jslint-ignore-end*/ appearing anywhere in a file will cause it to be skipped
+        /// </summary>
         public string IgnoreFile { get; set; }
+        /// <summary>
+        /// Run this thing through YUI compressor and report errors as well
+        /// </summary>
+        public bool YUIValidation { get; set; }
+        /// <summary>
+        /// The linter detected.
+        /// </summary>
         public LinterType LinterType
-        { get; set; }
+        { get; protected set; }
         /// <summary>
         /// File masks that will be excluded from wildcard matches
         /// </summary>
@@ -33,6 +126,58 @@ namespace JTC.SharpLinter.Config
 		///  The Js Lint boolean options specified
 		/// </summary>
         protected Dictionary<string, object> Options = new Dictionary<string,object>();
+
+        protected void GetOptionsFromCode()
+        {
+            if (_Descriptions == null)
+            {
+                _Descriptions = new Dictionary<string, Tuple<string, Type>>();
+            }
+            
+            int pos = JsLintCode.IndexOf("boolOptions =");
+            if (pos<0) { pos = JsLintCode.IndexOf("boolOptions="); }
+            if (pos<0) {
+                return;
+            }
+            pos = JsLintCode.IndexOf("{",pos);
+            string parsedData = String.Empty;
+            // if it's not compressed, get rid of comments first
+            using (StringReader reader = new StringReader(JsLintCode.Substring(pos+1))) 
+            {
+                string line;
+                bool done = false;
+                while ((line = reader.ReadLine()) != null && !done)
+                {
+                    if (line.IndexOf("//") >= 0)
+                    {
+                        line = line.Before("//") + Environment.NewLine;
+                    }
+                    if (line.IndexOf("}") > 0)
+                    {
+                        line = line.Before("}");
+                        done = true;
+                    }
+                    parsedData += line.RemoveWhitespace();
+                }
+            }
+
+            string[] opts = parsedData.Split(new char[] {','},StringSplitOptions.RemoveEmptyEntries);
+            foreach (string val in opts)
+            {
+                string[] parts = val.Split(':');
+                string key = parts[0].Trim();
+                if (!_Descriptions.ContainsKey(key))
+                {
+                    _Descriptions[key] = new Tuple<string,Type>("Unknown purpose - obtained from source code",typeof(bool));
+                }
+            }
+            // overlay with description info we know
+            foreach (var kvp in GetDescriptions(LinterType))
+            {
+                _Descriptions[kvp.Key] = kvp.Value;
+            }
+        }
+
         #region public option methods
         public void SetGlobal(string varName)
         {
@@ -313,9 +458,12 @@ namespace JTC.SharpLinter.Config
             returner.AppendLine("JSLINT options:");
             returner.AppendLine();
             AddDescriptionGroup(DescriptionsLint, returner);
-
-            returner.AppendLine("JSHINT options. Options that fuction opposite their JSLint counterpart are marked with (!)");
+            
             returner.AppendLine();
+            returner.AppendLine("JSHINT options: options that function opposite");
+            returner.AppendLine("heir JSLint counterpart are marked with (!)");
+            returner.AppendLine();
+            
             AddDescriptionGroup(DescriptionsHint, returner);
 
 			return returner.ToString();
