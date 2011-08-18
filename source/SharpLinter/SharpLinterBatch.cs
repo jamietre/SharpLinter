@@ -72,6 +72,7 @@ namespace JTC.SharpLinter.Config
 
                 if (hasErrors)
                 {
+                    lintErrors = true;
                     foreach (JsLintData error in result.Errors)
                     {
                         error.FilePath = file;
@@ -94,6 +95,7 @@ namespace JTC.SharpLinter.Config
                     
                     if (hasErrors)
                     {
+                        YUIErrors = true;
                         foreach (var error in compressor.Errors)
                         {
                             error.FilePath = file;

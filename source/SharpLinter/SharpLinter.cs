@@ -104,26 +104,26 @@ namespace JTC.SharpLinter
 				throw new ArgumentNullException("configuration");
 			}
 
-            bool hasSkips=false;
-
             lock (_lock)
             {
-
+                bool hasSkips = false;
 				LintDataCollector dataCollector = new LintDataCollector(configuration.GetOption<bool>("unused"));
 
                 if (!String.IsNullOrEmpty(configuration.IgnoreStart) && !String.IsNullOrEmpty(configuration.IgnoreEnd))
                 {
                     LineExclusion = new List<bool>();
+                    bool skipping=false;
+                    int startSkipLine = 0;
+
                     using (StringReader reader = new StringReader(Javascript))
                     {
                         string text;
                         int line = 0;
-                        int startSkipLine = 0;
-                        bool skipping = false;
+
                         while ((text = reader.ReadLine()) != null)
                         {
                             line++;
-                            if (text.IndexOf(skipping ? configuration.IgnoreEnd : configuration.IgnoreStart) >= 0)
+                            if (text.IndexOf("/*" + (skipping ? configuration.IgnoreEnd : configuration.IgnoreStart) + "*/") >= 0)
                             {
                                 if (!skipping)
                                 {
@@ -139,6 +139,17 @@ namespace JTC.SharpLinter
                             }
                             LineExclusion.Add(skipping);
                         }
+                    }
+                    if (skipping)
+                    {
+                        // there was no ignore-end found, so cancel the results 
+                        JsLintData err = new JsLintData();
+                        err.Line = startSkipLine;
+                        err.Character = 0;
+                        err.Reason = "An ignore start marker was found, but there was no ignore-end. Nothing was ignored.";
+                        dataCollector.Errors.Add(err);
+
+                        hasSkips = false;
                     }
                 }
                 if (string.IsNullOrEmpty(Javascript))
