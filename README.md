@@ -4,6 +4,11 @@ https://github.com/jamietre/SharpLinter
 
 (c) 2011 James Treworgy
 
+This is based on code written by Luke Page that was the predecessor
+to his extension "JSLint for Visual Studio 2010:"
+
+http://www.scottlogic.co.uk/2010/09/js-lint-in-visual-studio-part-1/
+
 ### Code use license.
 
 LICENSE (MIT License)
