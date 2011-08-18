@@ -189,7 +189,7 @@ to configure it as an external tool. Do the following:
 3. Set "Command" to the path of the executable.
 4. Set arguments to something like this:
 
-    -y -i $(ItemPath) -c "path/to/my/config" 
+    -y -f $(ItemPath) -c "path/to/my/config" 
 
 5. Check "Output Window"
 
@@ -200,9 +200,9 @@ You are now done. You can lint a file with Tools-> SharpLinter. If you want to m
 8. All the external commands appear as "Tools.ExternalCommand1" through "Tools.ExternalCommand20". These numbers are the ordinal order in which they appear in your list. Choose the right one.
 9. Click on "Press shortcut keys" and type whatever you want. I like Alt+z. You may have to remove it from something else first.
 
-You can also set it up to process all the files in your project. Make another entry in External Tools, but instead of specifying the active file, get rid of the -i option and add this instead:
+You can also set it up to process all the files in your project. Make another entry in External Tools, but instead of specifying the active file, use a pattern in your file spec, and add "r" to recurse subfolders:
 
-    -rd $(ProjectDir)/scripts/*.js -x *.min.js -x /thirdparty/
+    -rf $(ProjectDir)/scripts/*.js -x *.min.js -x /thirdparty/
 
 for example, to process all files in the "scripts" subfolder of your project, but skip the folder "thirdparty" within "scripts" and don't try to process minimized files.
 
