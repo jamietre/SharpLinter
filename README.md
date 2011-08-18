@@ -33,44 +33,63 @@ Visual Studio's output window, so clicking on a line will locate the file and li
 Each of the linting options can be specified in a configuration file as well (see below)
 
     
-    SharpLinter [-f file.js] [-[r]d] /directory [-c sharplinter.conf] [-o options]
-                [-j jslint.js] [-jr jslint | jshint] [-y] [-p yui | packer | best] [-ph] [-k]
-                [-is text] [-ie text] [-if text]");
+    SharpLinter [-f file.js] [-[r]d /directory/mask] [-o options] [-v]
+            [-c sharplinter.conf] [-j jslint.js] [-y]
+            [-p[h] yui|packer|best mask] [-k]
+            [-i ignore-start ignore-end] [-if text] [-of "format"]
 
-    Basic
+    Options:
 
-    -i file.js                      Process file.js. This option can be specified multiple times.
-    -d /directory/*.js              Process all files matching pattern *.js in /directory
-    -rd /directory/*.js             Recurse subfolders to find more matches  
-    -x *.min.js                     Exclude files that match *.min.js
+    -f file.js                parse file "file.js"
 
-    Configuring
+    -[r]d c:\scripts\*.js     parse all files matching "*.js" in "c:\scripts"
+                              if called with "r", will recurse subfolders
+    -o "option option ..."    set jslint/jshint options specified, separated by
+                              spaces, in format "option" or "option: true|false"
+                              
+    -v                        be verbose (report information other than errors)
+
+    -k                        Wait for a keytroke when done
     
-    -j c:/jslint.js                 Use c:/jslint.js to perform linting instead of embedded JSHINT   
-    -y                              Also run the file through Yahoo YUI compressor and report errors
-    -c c:/sharplinter.conf          Load global lint configuration settings from c:/sharplinter.conf. Any 
-                                    additional command-line settings or settings in the file will supercede
-                                    the global settings.
-    -is lint-ignorestart            Define /*lint-ignorestart*/ as the beginning of an ignore block
-    -ie lint-ignoreend              Define /*lint-ignoreend*/ as the end of an ignore block
-    -if lint-ignorefile             Define /*lint-ignorefile*/ as a flag to skip the entire file
-    -jr jshint                      Assume that JSHint is being used for processing (other option: jslint).
-                                    This should not be necessary, SharpLinter will try to figure out which you 
-                                    are using from the code itself.
+    -c c:\sharplinter.conf    load config options from file specified
     
-    Minimizing 
+    -j jslint.js              use file specified to parse files instead of embedded
+                              (probably old) script
+                              
+    -y                        Also run the script through YUI compressor to look for
+                              errors
+                              
+    -i text-start text-end    Ignore blocks bounded by /*text-start*/ and
+                              /*text-end*/
+                              
+    -if text-skip             Ignore files that contain /*text-skip*/ anywhere
     
-    -p yui|packer|best *.min.js     When no errors are found, minimize to filename.min.js using Yahoo YUI
-                                    compressor, Dean Edwards' JSPacker (without data compression), or
-                                    whichever produces a smaller file
-    
-    -ph                             Preserve the contents of the first content block of format /* ... */
-                                    at the top of the minimized output. Must not have any non-whitespace
-                                    before the opening comment tag.
-    
-     Miscellaneous
-  
-     -k                             Wait for a keystroke after finishing before exiting
+    -of "output format"       Use the string as a format for the error output. The
+                              default is:
+                              "{0}({1}): ({2}) {3} at character {4}". The parms are
+                              {0}: full file path, {1}: line number, {2}: source
+                              (lint or yui), {4}: character
+
+    -p[h] yui|packer|best *.min.js      Pack/minimize valid input using YUI
+                                    Compressor, Dean Edwards' JS Packer, or
+                              whichever produces the smallest file. Output to a
+                              file "filename.min.js". If validation fails,
+                              the output file will be deleted (if exists)
+                              to ensure no version mismatch. If  -h is specified,
+                              the first comment block in the file /* ... */
+                              will be passed uncompressed at the beginning of the
+                              output.
+
+## JSLINT/JSHINT options
+
+The options passed with -o should be of the format:
+
+    "[option : value | option][,option: value | option]..."
+
+Most options (except maxlen) are boolean, so the "value" is optional, in which case it will be set "true."
+All options are false by default, and true disables or enables the specified behavior. In JSHINT, some options
+have the opposite behavior as their JSLINT counterpart, and setting them "true" will actually enable rather
+than disable a particular validation.
 
 
 ## Config File Format
