@@ -239,13 +239,12 @@ namespace JTC.SharpLinter
 
             }
             
-            //try
-            //{
+            try
+            {
                 SharpLinterBatch batch = new SharpLinterBatch(finalConfig);
                 batch.FilePaths = filePaths;
                 batch.Process();
-            //}
-            try {}
+            }
             catch(Exception e)
             {
                 Console.WriteLine("Everything was looking good on your command line, but the parser threw an error: "+ e.Message);

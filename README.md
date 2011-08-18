@@ -126,7 +126,7 @@ A basic file is included. The file has up four sections. Each section is structu
     sectiontitle*/
 
 
-Anything found between these constructs will be ignored. Valid section names are jslint, global, exclude, and sharplinter. An example:
+Anything else in the file that is not found between these constructs will be ignored. Valid section names are jslint, global, exclude, and sharplinter. An example:
 
     // set global options
 
