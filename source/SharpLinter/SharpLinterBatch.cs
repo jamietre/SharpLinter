@@ -40,7 +40,7 @@ namespace JTC.SharpLinter.Config
         }
         public void Process()
         {
-            SharpLinter lint = new SharpLinter(Configuration.JsLintCode);
+            SharpLinter lint = new SharpLinter(Configuration);
             List<string> SummaryInfo = new List<string>();
             
             if (Configuration.Verbose)
@@ -55,7 +55,12 @@ namespace JTC.SharpLinter.Config
                 {
                     Console.WriteLine("    " + file.Path);
                 }
-                Console.WriteLine();
+                Console.WriteLine("Exclude file masks:");
+                foreach (var file in Configuration.ExcludeFiles)
+                {
+                    Console.WriteLine("    " + file);
+                }
+                Console.WriteLine("----------------------------------------");
             }
             int fileCount = 0;
 
@@ -73,8 +78,8 @@ namespace JTC.SharpLinter.Config
                 {
                     continue;
                 }
-                lint.Javascript = javascript;
-                JsLintResult result = lint.Lint(Configuration);
+                
+                JsLintResult result = lint.Lint(javascript);
                 bool hasErrors = result.Errors.Count > 0;
 
                 if (hasErrors)
@@ -98,7 +103,7 @@ namespace JTC.SharpLinter.Config
                     compressor.KeepHeader = Configuration.MinimizeKeepHeader;
                     compressor.CompressorType = Configuration.CompressorType;
 
-                    hasErrors = !compressor.YUITest(lint.Javascript);
+                    hasErrors = !compressor.YUITest(javascript);
                     
                     if (hasErrors)
                     {
@@ -115,7 +120,7 @@ namespace JTC.SharpLinter.Config
 
                 if (Configuration.MinimizeOnSuccess) {
                     compressor.Clear();
-                    compressor.Input = lint.Javascript;
+                    compressor.Input = javascript;
                     compressor.CompressorType = Configuration.CompressorType;
                     compressor.KeepHeader = Configuration.MinimizeKeepHeader;
 

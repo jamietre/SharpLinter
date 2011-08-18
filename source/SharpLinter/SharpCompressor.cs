@@ -105,16 +105,16 @@ namespace JTC.SharpLinter
                 int pos = javascript.IndexOf("/*");
                 int endPos = -1;
                 string leadin = String.Empty;
-                if (pos > 0)
+                if (pos >= 0)
                 {
                     leadin = javascript.Substring(0, pos);
-                }
-                if (leadin.Trim() == string.Empty)
-                {
-                    endPos = javascript.IndexOf("*/", pos + 1);
-                    header = javascript.Substring(pos, endPos + 2) + Environment.NewLine;
-                    javascript = javascript.Substring(endPos + 2);
+                    if (leadin.Trim() == string.Empty)
+                    {
+                        endPos = javascript.IndexOf("*/", pos + 1);
+                        header = javascript.Substring(pos, endPos + 2) + Environment.NewLine;
+                        javascript = javascript.Substring(endPos + 2);
 
+                    }
                 }
             }
 

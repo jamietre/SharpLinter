@@ -173,8 +173,6 @@ namespace JTC.SharpLinter
 			}
             // Done parsing options
 
-            //Console.WriteLine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(JTC.SharpLinter.SharpLinterExe)).Location) + "\\jslint.js");
-
             if (!String.IsNullOrEmpty(jsLintSource))
             {
                 try
@@ -199,6 +197,14 @@ namespace JTC.SharpLinter
                 }
             }
 
+            if (!string.IsNullOrEmpty(excludeFiles))
+            {
+                foreach (string file in excludeFiles.Split(new char[] {' '},StringSplitOptions.RemoveEmptyEntries))
+                {
+                    finalConfig.SetFileExclude(file);
+                }
+
+            }
             // Get global config first.
             if (!String.IsNullOrEmpty(globalConfigFile))
             {

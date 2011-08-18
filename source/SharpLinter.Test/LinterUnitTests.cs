@@ -32,22 +32,24 @@ namespace JTC.SharpLinter.Test
 		public void TestMultipleCalls()
 		{
 
-            SharpLinter lint = new SharpLinter();
             var config = DefaultConfig;
             
+            SharpLinter lint = new SharpLinter(config);
+            
+            
             JsLintResult result = lint.Lint(
-							@"var i, y; for (i = 0; i < 5; i++) console.Print(message + ' (' + i + ')'); number += i;",config);
+							@"var i, y; for (i = 0; i < 5; i++) console.Print(message + ' (' + i + ')'); number += i;");
 
             // original test was 4 errors - jshint defaults?
 			Assert.AreEqual(4, result.Errors.Count);
 
 			JsLintResult result2 = lint.Lint(
-                            @"function annon() { var i, number; for (i = 0; i === 5; i++) { number += i; } }", config);
+                            @"function annon() { var i, number; for (i = 0; i === 5; i++) { number += i; } }");
 
 			Assert.AreEqual(1, result2.Errors.Count);
 
             JsLintResult result3 = lint.Lint(
-                            @"function annon() { var i, number, x; for (i = 0; i == 5; i++) { number += i; } }", config);
+                            @"function annon() { var i, number, x; for (i = 0; i == 5; i++) { number += i; } }");
 
 			Assert.AreEqual(2, result3.Errors.Count);
 		}
@@ -55,14 +57,14 @@ namespace JTC.SharpLinter.Test
 		[TestMethod]
 		public void TestMultipleDifferentOptions()
 		{
-			SharpLinter lint = new SharpLinter();
             JsLintConfiguration config = new JsLintConfiguration();
+			SharpLinter lint = new SharpLinter(config);
+            
             config.SetOption("eqeqeq",true);
             config.SetOption("plusplus",true);
             
             JsLintResult result = lint.Lint(
-							@"function annon() { var i, number, x; for (i = 0; i == 5; i++) { number += ++i; } }",
-							config
+							@"function annon() { var i, number, x; for (i = 0; i == 5; i++) { number += ++i; } }"							
                             );
 
 			Assert.AreEqual(3, result.Errors.Count);
@@ -70,11 +72,13 @@ namespace JTC.SharpLinter.Test
             config = new JsLintConfiguration();
             config.SetOption("unused", false);
 
-			JsLintResult result2 = lint.Lint(
-							@"function annon() { var i, number; for (i = 0; i === 5; i++) { number += i; } }",
-							config);
+            // should fail on ++ since "plusplus=true" -- note that we are testing with JSHINT so the
+            // behavior is opposite of JSLINT for this options
 
-			Assert.AreEqual(0, result2.Errors.Count);
+			JsLintResult result2 = lint.Lint(
+							@"function annon() { var i, number; for (i = 0; i === 5; i++) { number += i; } }");
+
+			Assert.AreEqual(1, result2.Errors.Count);
 		}
 
 		[TestMethod]

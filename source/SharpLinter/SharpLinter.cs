@@ -9,6 +9,7 @@ using System.IO;
 using System.Reflection;
 using JTC.SharpLinter.Config;
 
+
 namespace JTC.SharpLinter
 {
 	/// <summary>
@@ -16,97 +17,70 @@ namespace JTC.SharpLinter
 	/// </summary>
     public class SharpLinter
     {
-        private JavascriptContext _context;
+        private IJSEngineWrapper _context;
         private object _lock = new Object();
       
         /// <summary>
-        /// String of the javascript to be validated
+        /// Map of lines that should be excluded (true for an index means exclude that line)
         /// </summary>
-        public string Javascript
-        {
-            get;
-            set;
-        }
-        private List<bool> LineExclusion;
-
+        protected List<bool> LineExclusion;
 
         /// <summary>
         /// The script that gets run
         /// </summary>
-        public string JSLint
-        {
-            get;
-            protected set;
-        }
-        public SharpLinter()
-        {
-            Initialize(string.Empty);
-        }
-        public SharpLinter(string jsLintSource)
-        {
-            Initialize(jsLintSource);
-        }
-        protected void Initialize(string jsLintSource) 
-        {
+        protected string JSLint;
 
-            _context = new JavascriptContext();
+        protected JsLintConfiguration Configuration;
+        public SharpLinter(JsLintConfiguration config)
+        {
+            Configuration = config;
+            Initialize();
+        }
+        
+        protected void Initialize() 
+        {
+            _context = new Engines.Neosis();
+            //_context = new JavascriptContext();
 			
-            if (String.IsNullOrEmpty(jsLintSource))
+            if (String.IsNullOrEmpty(Configuration.JsLintCode))
             {
-                throw new Exception("No source specified.");
+                throw new Exception("No JSLINT/JSHINT code was specified in the configuration.");
             }
             else
             {
-                JSLint = jsLintSource;
+                JSLint = Configuration.JsLintCode;
             }
 
             _context.Run(JSLint);
 
-            _context.Run(
+            string func = Configuration.LinterType == LinterType.JSHint ? "JSHINT" : "JSLINT";
+            string run =
                 @"lintRunner = function (dataCollector, javascript, options) {
-                    JSHINT(javascript,options);
+                    JSLINT(javascript,options);
                     
-                    var data = JSHINT.data();
+                    var data = JSLINT.data();
                     if  (data) {
                         dataCollector.ProcessData(data);
                     }
-                };");
+                };".Replace("JSLINT", func);
+            _context.Run(run);
         }
 
-		public JsLintResult Lint()
-		{
-			return Lint(new JsLintConfiguration());
-		}
         public JsLintResult Lint(string javascript)
         {
-            return Lint(javascript,new JsLintConfiguration());
-        }
-        public JsLintResult Lint(string javascript, JsLintConfiguration configuration)
-        {
-            Javascript = javascript;
-            return Lint(configuration);
-        }
-        public JsLintResult Lint(JsLintConfiguration configuration)
-        {
 			
-
-			if (configuration == null)
-			{
-				throw new ArgumentNullException("configuration");
-			}
-
             lock (_lock)
             {
                 bool hasSkips = false;
-				LintDataCollector dataCollector = new LintDataCollector(configuration.GetOption<bool>("unused"));
+				LintDataCollector dataCollector = new LintDataCollector(Configuration.GetOption<bool>("unused"));
 
-                if (!String.IsNullOrEmpty(configuration.IgnoreStart) && !String.IsNullOrEmpty(configuration.IgnoreEnd))
+                if (!String.IsNullOrEmpty(Configuration.IgnoreStart) && !String.IsNullOrEmpty(Configuration.IgnoreEnd))
                 {
                     LineExclusion = new List<bool>();
                     bool skipping=false;
                     int startSkipLine = 0;
 
-                    using (StringReader reader = new StringReader(Javascript))
+                    using (StringReader reader = new StringReader(javascript))
                     {
                         string text;
                         int line = 0;
@@ -114,7 +88,7 @@ namespace JTC.SharpLinter
                         while ((text = reader.ReadLine()) != null)
                         {
                             line++;
-                            if (text.IndexOf("/*" + (skipping ? configuration.IgnoreEnd : configuration.IgnoreStart) + "*/") >= 0)
+                            if (text.IndexOf("/*" + (skipping ? Configuration.IgnoreEnd : Configuration.IgnoreStart) + "*/") >= 0)
                             {
                                 if (!skipping)
                                 {
@@ -143,7 +117,7 @@ namespace JTC.SharpLinter
                         hasSkips = false;
                     }
                 }
-                if (string.IsNullOrEmpty(Javascript))
+                if (string.IsNullOrEmpty(javascript))
 			    {
                     JsLintData err = new JsLintData();
                     err.Line=0;
@@ -153,8 +127,8 @@ namespace JTC.SharpLinter
 			    }
                 // Setting the externals parameters of the context
 				_context.SetParameter("dataCollector", dataCollector);
-                _context.SetParameter("javascript", Javascript);
-				_context.SetParameter("options", configuration.ToJsOptionVar());
+                _context.SetParameter("javascript", javascript);
+				_context.SetParameter("options", Configuration.ToJsOptionVar());
 
 
                 // Running the script
