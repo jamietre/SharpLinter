@@ -54,21 +54,20 @@ Yahoo YUI project: <http://yuicompressor.codeplex.com/>
 
 Basic usage: Process all files in the current directory:
 
-    sharplinter *.js    
+    sharplinter -f *.js    
 
 Detailed usage:
 
     
-    sharplinter [-f file.js] [-[r]d /directory/mask] [-o options] [-v]
+    sharplinter [-[r]f /path/*.js] [-o options] [-v]
             [-c sharplinter.conf] [-j jslint.js] [-y]
             [-p[h] yui|packer|best mask] [-k]
             [-i ignore-start ignore-end] [-if text] [-of "format"]
 
     Options:
 
-    -f file.js                parse file "file.js"
 
-    -[r]d c:\scripts\*.js     parse all files matching "*.js" in "c:\scripts"
+    -[r]f c:\scripts\*.js     parse all files matching "*.js" in "c:\scripts"
                               if called with "r", will recurse subfolders
     -o "option option ..."    set jslint/jshint options specified, separated by
                               spaces, in format "option" or "option: true|false"

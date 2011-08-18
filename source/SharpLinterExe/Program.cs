@@ -27,14 +27,13 @@ namespace JTC.SharpLinter
 
 			if (args.Length == 0)
 			{
-				Console.WriteLine("SharpLinter [-f file.js] [-[r]d /directory/mask] [-o options] [-v] ");
+				Console.WriteLine("SharpLinter [-[r]f /path/*.js] [-o options] [-v] ");
                 Console.WriteLine("            [-c sharplinter.conf] [-j jslint.js] [-y]");
                 Console.WriteLine("            [-p[h] yui|packer|best mask] [-k] ");
                 Console.WriteLine("            [-i ignore-start ignore-end] [-if text] [-of \"format\"]");
 				Console.WriteLine();
                 Console.WriteLine(("Options: \n\n" +
-                                "-f file.js                parse file \"file.js\"\n" +
-                                "-[r]d c:\\scripts\\*.js     parse all files matching \"*.js\" in \"c:\\scripts\"\n" +
+                                "-[r]f c:\\scripts\\*.js     parse all files matching \"*.js\" in \"c:\\scripts\"\n" +
                                 "                          if called with \"r\", will recurse subfolders\n" +
                                 "-o \"option option ...\"    set jslint/jshint options specified, separated by\n"+
                                 "                          spaces, in format \"option\" or \"option: true|false\"\n" +
