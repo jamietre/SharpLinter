@@ -55,13 +55,16 @@ namespace JTC.SharpLinter.Config
                     yield return path;
                 }
             }
-            if (noPatterns)
-            {
-                foreach (string name in names)
-                {
-                    yield return name;
-                }
-            }
+            // think this was from when we had the patterns/paths loops inverted. Should never be needed (actually causes dups now)
+            // .. if the pattern loop is skipped, match will be false, as is correct.
+
+            //if (noPatterns)
+            //{
+            //    foreach (string name in names)
+            //    {
+            //        yield return name;
+            //    }
+            //}
         }
         private static string FileNamePart(string pattern)
         {

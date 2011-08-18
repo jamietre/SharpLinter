@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using JTC.SharpLinter;
 using JTC.SharpLinter.Config;
+using System.Reflection;
 
 /*
  * 
@@ -14,17 +15,15 @@ using JTC.SharpLinter.Config;
  * Based on code originally created by Luke Page/ScottLogic: http://www.scottlogic.co.uk/2010/09/js-lint-in-visual-studio-part-1/
  * 
  */
-namespace ConsoleApplication1
+namespace JTC.SharpLinter
 {
 
-    class Program
+    class SharpLinterExe
     {
         static void Main(string[] args)
         {
             Lazy<JsLintConfiguration> _Configuration = new Lazy<JsLintConfiguration>();
             Func<JsLintConfiguration> Configuration = () => { return _Configuration.Value; };
-
-            JsLintConfiguration finalConfig = new JsLintConfiguration();
 
 			if (args.Length == 0)
 			{
@@ -85,8 +84,8 @@ namespace ConsoleApplication1
             string commandLineOptions = String.Empty;
             string globalConfigFile = String.Empty;
             string excludeFiles = String.Empty;
-            
             string jsLintSource = String.Empty;
+
             HashSet<PathInfo> filePaths = new HashSet<PathInfo>();
 
             bool readKey = false;
@@ -94,6 +93,9 @@ namespace ConsoleApplication1
 
             CompressorType compressorType = 0;
             
+            JsLintConfiguration finalConfig = new JsLintConfiguration();
+
+
 			for (int i = 0; i < args.Length; i++ )
 			{
 				string arg = args[i].Trim().ToLower();
@@ -136,24 +138,13 @@ namespace ConsoleApplication1
                             Console.WriteLine("Multiple config files specified.");
                             goto exit;
                         }
-                        globalConfigFile = value;
-                        i++;
-						break;
-					case "-f":
-						filePaths.Add(new PathInfo(value,false));
+                        globalConfigFile =Utility.ResolveRelativePath(value);
                         i++;
 						break;
                     case "-j":
+
                         if (File.Exists(value)) {
-                            try
-                            {
-                                finalConfig.JsLintCode = File.ReadAllText(value);
-                            }
-                            catch
-                            {
-                                Console.WriteLine(String.Format("The JSLINT/JSHINT file \"{0}\" appears to be invalid.", value));
-                                goto exit;
-                            }
+                            jsLintSource = Utility.ResolveRelativePath(value);
                         } else {
                             Console.WriteLine(String.Format("Cannot find JSLint source file {0}",value));
                             goto exit;
@@ -163,9 +154,9 @@ namespace ConsoleApplication1
                     case "-k":
                         readKey = true;
                         break;
-					case "-d":
-					case "-rd":
-                        filePaths.Add(new PathInfo(value, arg == "-rd"));
+					case "-f":
+					case "-rf":
+                        filePaths.Add(new PathInfo(value, arg == "-rf"));
                         i++;
 						break;
 					case "-o":
@@ -182,6 +173,32 @@ namespace ConsoleApplication1
 				}
 			}
             // Done parsing options
+
+            //Console.WriteLine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(JTC.SharpLinter.SharpLinterExe)).Location) + "\\jslint.js");
+
+            if (!String.IsNullOrEmpty(jsLintSource))
+            {
+                try
+                {
+                    finalConfig.JsLintCode = File.ReadAllText(jsLintSource);
+                }
+                catch
+                {
+                    Console.WriteLine(String.Format("The JSLINT/JSHINT file \"{0}\" appears to be invalid.", jsLintSource));
+                    goto exit;
+                }
+            }
+            else
+            {
+                // See if there's a default linter
+
+                string defaultLint = Path.GetDirectoryName(Assembly.GetAssembly(typeof(JTC.SharpLinter.SharpLinterExe)).Location) + "\\jslint.js";
+                
+                if (File.Exists(defaultLint))
+                {
+                    finalConfig.JsLintCode = File.ReadAllText(defaultLint);
+                }
+            }
 
             // Get global config first.
             if (!String.IsNullOrEmpty(globalConfigFile))

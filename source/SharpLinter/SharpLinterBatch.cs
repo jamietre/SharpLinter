@@ -42,22 +42,29 @@ namespace JTC.SharpLinter.Config
         {
             SharpLinter lint = new SharpLinter(Configuration.JsLintCode);
             List<string> SummaryInfo = new List<string>();
+            
             if (Configuration.Verbose)
             {
-                Console.WriteLine("SharpLinter: Beginning processing at {0:MM/dd/yy H:mm:ss zzz}", DateTime.Now);
-                Console.WriteLine("Using linter options for " + Configuration.LinterType.ToString(), DateTime.Now);
+                Console.WriteLine(String.Format("SharpLinter: Beginning processing at {0:MM/dd/yy H:mm:ss zzz}", DateTime.Now));
+                Console.WriteLine(String.Format("Using linter options for {0}, {1}",Configuration.LinterType.ToString(),Configuration.JsLintVersion));
                 Console.WriteLine("LINT options: " + Configuration.OptionsToString());
                 Console.WriteLine("LINT globals: " + Configuration.GlobalsToString());
                 Console.WriteLine("Sharplint: ignorestart={0}, ignoreend={1}, ignorefile={2}",Configuration.IgnoreStart,Configuration.IgnoreEnd,Configuration.IgnoreFile);
+                Console.WriteLine("Input paths: (working directory=" + Directory.GetCurrentDirectory()+")");
+                foreach (var file in FilePaths)
+                {
+                    Console.WriteLine("    " + file.Path);
+                }
                 Console.WriteLine();
             }
             int fileCount = 0;
 
             List<JsLintData> allErrors = new List<JsLintData>();
             
-
+            
             foreach (string file in Configuration.GetMatchedFiles(FilePaths))
             {
+                List<JsLintData> fileErrors = new List<JsLintData>();
                 bool lintErrors=false;
                 bool YUIErrors=false;
                 fileCount++;
@@ -76,7 +83,7 @@ namespace JTC.SharpLinter.Config
                     foreach (JsLintData error in result.Errors)
                     {
                         error.FilePath = file;
-                        allErrors.Add(error);
+                        fileErrors.Add(error);
                     }
                     
                     SummaryInfo.Add(String.Format("{0}: Lint found {1} errors.", file, result.Errors.Count));
@@ -99,7 +106,7 @@ namespace JTC.SharpLinter.Config
                         foreach (var error in compressor.Errors)
                         {
                             error.FilePath = file;
-                            allErrors.Add(error);
+                            fileErrors.Add(error);
                         }
                         
                         SummaryInfo.Add(String.Format("{0}: YUI compressor found {1} errors.", file, compressor.ErrorCount));
@@ -133,12 +140,12 @@ namespace JTC.SharpLinter.Config
                         SummaryInfo.Add(String.Format("{0}: Unable to compress output to '{1}': {2}", file, target, e.Message));
                     }
                 }
-                allErrors.Sort(LintDataComparer);
                 if (!(lintErrors || YUIErrors)) 
                 {
                     SummaryInfo.Add(String.Format("{0}: No errors found.", file));
                 }
-                
+                fileErrors.Sort(LintDataComparer);
+                allErrors.AddRange(fileErrors);                
             }
             if (Configuration.Verbose)
             {

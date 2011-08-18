@@ -1,4 +1,6 @@
-SHARPLINTER 0.99
+SHARPLINTER 1.0
+
+https://github.com/jamietre/SharpLinter
 
 (c) 2011 James Treworgy
 
@@ -30,10 +32,34 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 SharpLinter is a command line tool to automate error-checking Javascript files. It produces output that is formatted for 
 Visual Studio's output window, so clicking on a line will locate the file and line in the IDE.
 
-Each of the linting options can be specified in a configuration file as well (see below)
+Each of the linting options can be specified in a configuration file as well (see below).
+
+## Roadmap for Distribution
+
+All these files should be copied into a folder from where it will be invoked.
+
+    bin/SharpLinter.exe                     The executable.
+    bin/JTC.SharpLinter.dll                 The class library (if you want to use this from within another app)
+    bin/Noesis.Javascript.dll               Noesis Javascript.NET V8 runtime
+    bin/Yahoo.Yui.Compressor.dll            Yahoo YUI Compressor for .NET
+    bin/EcmaScript.NET.modified.dll         Distributed with Yahoo YUI
+
+These are needed by the Noesis Javascript V8 wrapper:
+    
+    bin/msvcp100.dll                        MS VC++ runtimes. You probably do not need these, but if you have problems 
+    bin/msvcr100.dll                           try copying them to the Windows system folder.                       
+    
+Noesis project: <http://javascriptdotnet.codeplex.com/>
+Yahoo YUI project: <http://yuicompressor.codeplex.com/>
+
+Basic usage: Process all files in the current directory:
+
+    sharplinter *.js    
+
+Detailed usage:
 
     
-    SharpLinter [-f file.js] [-[r]d /directory/mask] [-o options] [-v]
+    sharplinter [-f file.js] [-[r]d /directory/mask] [-o options] [-v]
             [-c sharplinter.conf] [-j jslint.js] [-y]
             [-p[h] yui|packer|best mask] [-k]
             [-i ignore-start ignore-end] [-if text] [-of "format"]

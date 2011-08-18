@@ -53,16 +53,7 @@ namespace JTC.SharpLinter
 			
             if (String.IsNullOrEmpty(jsLintSource))
             {
-
-                using (Stream jslintStream = Assembly.Load("JTC.SharpLinter")
-                                                .GetManifestResourceStream(
-                                                @"JTC.SharpLinter.fulljslint.js"))
-                {
-                    using (StreamReader sr = new StreamReader(jslintStream))
-                    {
-                        JSLint = sr.ReadToEnd();
-                    }
-                }
+                throw new Exception("No source specified.");
             }
             else
             {

@@ -32,9 +32,6 @@
 *
 */
 
-// jslint.js
-// JSHINT from github 8/15/2011 (embedded in SharpLinter)
-
 /*
 JSHINT is a global function. It takes two parameters.
 

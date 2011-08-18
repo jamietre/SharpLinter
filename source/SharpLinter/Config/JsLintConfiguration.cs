@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Reflection;
 
 namespace JTC.SharpLinter.Config
 {
@@ -20,6 +21,16 @@ namespace JTC.SharpLinter.Config
 		{
             LinterType = 0;
             CompressorType = CompressorType.best;
+            using (Stream jslintStream = Assembly.Load("JTC.SharpLinter")
+                                .GetManifestResourceStream(
+                                @"JTC.SharpLinter.fulljslint.js"))
+            {
+                using (StreamReader sr = new StreamReader(jslintStream))
+                {
+                    JsLintCode= sr.ReadToEnd();
+                }
+            }
+
 		}
         /// <summary>
         /// The javascript code that will be used to parse the input file. 
@@ -28,36 +39,40 @@ namespace JTC.SharpLinter.Config
             get { return _JsLintCode; }
             set
             {
-                JsLintVersion="Unknown (minimized source?)";
+                JsLintVersion="Unknown version (minimized source?)";
                 if (value.IndexOf("var JSHINT") > 0)
                 {
                     LinterType = LinterType.JSHint;
-                    JsLintVersion = "JSHINT builds do not include a date or version number.";
+                    JsLintVersion = "Unknown version (JSHINT builds do not include a date or version number)";
                 }
                 else if (value.IndexOf("var JSLINT") > 0)
                 {
                     LinterType = LinterType.JSLint;
-                    bool useNextLine = false;
-                    using (StringReader reader = new StringReader(value))
-                    {
-                        string line;
-                        while ((line = reader.ReadLine()) != null)
-                        {
-                            if (useNextLine)
-                            {
-                                JsLintVersion = line.AfterLast("//");
-                                break;
-                            }
-                            if (line == "// jslint.js")
-                            {
-                                useNextLine = true;
-                            }
-                        }
-                    }
                 }
                 else
                 {
                     throw new Exception("What is this code you are trying to use? It does not appear to be either JSHINT or JSLINT.");
+                }
+
+                // even through JSHINT doesn't have the version date, look for it to ID the embedded one
+                bool useNextLine = false;
+                int lineNumber = 0;
+                using (StringReader reader = new StringReader(value))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null && lineNumber<100)
+                    {
+                        lineNumber++;
+                        if (useNextLine)
+                        {
+                            JsLintVersion = "version info: " + line.AfterLast("//").Trim();
+                            break;
+                        }
+                        if (line.StartsWith("// jslint.js"))
+                        {
+                            useNextLine = true;
+                        }
+                    }
                 }
                 _JsLintCode = value;
                 GetOptionsFromCode();
@@ -129,10 +144,7 @@ namespace JTC.SharpLinter.Config
 
         protected void GetOptionsFromCode()
         {
-            if (_Descriptions == null)
-            {
-                _Descriptions = new Dictionary<string, Tuple<string, Type>>();
-            }
+            _Descriptions = new Dictionary<string, Tuple<string, Type>>();
             
             int pos = JsLintCode.IndexOf("boolOptions =");
             if (pos<0) { pos = JsLintCode.IndexOf("boolOptions="); }
@@ -527,12 +539,14 @@ namespace JTC.SharpLinter.Config
             //    SetFileExclude(exclude);
             //}
         }
+
+
         public IEnumerable<string> GetMatchedFiles(IEnumerable<PathInfo> paths)
         {
             bool hasItems = false;
             foreach (var item in paths)
             {
-                string value =item.Path;
+                string value = Utility.ResolveRelativePath(item.Path);
 
                 string filter = null;
                 if (value.Contains("*"))
@@ -540,10 +554,13 @@ namespace JTC.SharpLinter.Config
                     filter = Path.GetFileName(value);
                     value = value.Substring(0, value.Length - filter.Length);
                 }
+                // is directory or file?
+                
+
                 if (!Directory.Exists(value))
                 {
                     // perhaps its a file?
-                    if (!File.Exists(value))
+                    if (filter==null && !File.Exists(value))
                     {
                         Console.WriteLine(string.Format("Ignoring missing file or directory: {0}", value));
                         continue;

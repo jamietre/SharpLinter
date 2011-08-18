@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace JTC.SharpLinter
 {
@@ -54,6 +55,22 @@ namespace JTC.SharpLinter
     }
     public static class Utility
     {
+        /// <summary>
+        /// Qualifies a relative path file
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static string ResolveRelativePath(string path)
+        {
+            if (!Path.IsPathRooted(path))
+            {
+                return Directory.GetCurrentDirectory() + "\\" + path;
+            }
+            else
+            {
+                return path;
+            }
+        }
         /// <summary>
         /// Evaluates the string to determine whether the value is true or false. Valid true strings are any form of "yes," "true," "on," or the digit "1"
         /// False is always returned otherwise.
