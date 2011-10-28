@@ -55,6 +55,7 @@ namespace JTC.SharpLinter
     }
     public static class Utility
     {
+       
         /// <summary>
         /// Qualifies a relative path file
         /// </summary>

@@ -140,7 +140,14 @@ namespace JTC.SharpLinter
                 } else {
                     result.Errors = new List<JsLintData>();
                     foreach (var error in dataCollector.Errors) {
-                        if (!LineExclusion[error.Line - 1])
+                        if (error.Line >= 0 && error.Line < LineExclusion.Count)
+                        {
+                            if (!LineExclusion[error.Line - 1])
+                            {
+                                result.Errors.Add(error);
+                            }
+                        }
+                        else
                         {
                             result.Errors.Add(error);
                         }
@@ -201,21 +208,41 @@ namespace JTC.SharpLinter
 
 					if (_processUnuseds && dataDict.ContainsKey("unused"))
 					{
+                        int lastLine = -1;
+                        JsLintData jsError=null;
+                        string unusedList = String.Empty;
+                        int unusedCount = 0;
 						ProcessListOfObject(dataDict["unused"], (unused) =>
 						{
-							JsLintData jsError = new JsLintData();
+
+                            int line = 0;
 							if (unused.ContainsKey("line"))
 							{
-								jsError.Line = (int)unused["line"];
+								line = (int)unused["line"];
 							}
-
+                            if (line!=lastLine) {
+                                if (jsError != null) {
+                                    jsError.Reason = "Unused Variable" + (unusedCount > 1 ? "s " : " ") + unusedList;
+                                    _errors.Add(jsError);
+                                    
+                                }
+                                jsError = new JsLintData();
+                                jsError.Source = "lint";
+                                jsError.Character = -1;
+                                jsError.Line = line;
+                                unusedCount = 0;
+                                unusedList = String.Empty;
+                            }
+                            
 							if (unused.ContainsKey("name"))
 							{
-								jsError.Reason = string.Format("Unused Variable : {0}", unused["name"]);
+                               unusedList += (unusedCount==0 ? String.Empty : ", ") + unused["name"];
+                               unusedCount++;
 							}
-
-							_errors.Add(jsError);
+                            lastLine = line;
 						});
+                        jsError.Reason = "Unused Variable" + (unusedCount > 1 ? "s " : " ") + unusedList;
+                        _errors.Add(jsError);
 					}
 				}
 			}

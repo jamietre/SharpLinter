@@ -36,7 +36,7 @@ namespace JTC.SharpLinter.Config
         public SharpLinterBatch(JsLintConfiguration configuration)
         {
             Configuration = configuration;
-            OutputFormat = "{0}({1}): ({2}) {3} at character {4}";
+            OutputFormat = "{0}({1}): ({2}) {3} {4}";
         }
         public void Process()
         {
@@ -118,36 +118,53 @@ namespace JTC.SharpLinter.Config
                     }
                 }
 
-                if (Configuration.MinimizeOnSuccess) {
-                    compressor.Clear();
-                    compressor.Input = javascript;
-                    compressor.CompressorType = Configuration.CompressorType;
-                    compressor.KeepHeader = Configuration.MinimizeKeepHeader;
-
-                    string target = MapFileName(file, Configuration.MinimizeFilenameMask);
-                    try
-                    {
-                        //Delete no matter what - there should never be a mismatch between regular & min
-                        if (File.Exists(target))
-                        {
-                            File.Delete(target);
-                        }
-
-                        if (!hasErrors && compressor.Minimize())
-                        {
-                            File.WriteAllText(target, compressor.Output);
-                            SummaryInfo.Add(String.Format("{0}: Compressed to '{1}' ({2})", file, target, compressor.Statistics));
-                        }
-                    }
-                    
-                    catch (Exception e)
-                    {
-                        SummaryInfo.Add(String.Format("{0}: Unable to compress output to '{1}': {2}", file, target, e.Message));
-                    }
-                }
-                if (!(lintErrors || YUIErrors)) 
+                string successLine = String.Empty;
+                if (!(lintErrors || YUIErrors))
                 {
-                    SummaryInfo.Add(String.Format("{0}: No errors found.", file));
+                    successLine = String.Format("{0}: No errors found.", file);
+
+                    if (Configuration.MinimizeOnSuccess)
+                    {
+                        compressor.Clear();
+                        compressor.Input = javascript;
+                        compressor.CompressorType = Configuration.CompressorType;
+                        compressor.KeepHeader = Configuration.MinimizeKeepHeader;
+
+                        string target = MapFileName(file, Configuration.MinimizeFilenameMask);
+                        try
+                        {
+                            //Delete no matter what - there should never be a mismatch between regular & min
+                            if (File.Exists(target))
+                            {
+                                File.Delete(target);
+                            }
+
+                            if (compressor.Minimize())
+                            {
+                                File.WriteAllText(target, compressor.Output);
+                                string path = target.BeforeLast("\\");
+                                if (target.StartsWith(path))
+                                {
+                                    path = "." + target.Substring(path.Length);
+                                }
+                                else
+                                {
+                                    path = file;
+                                }
+                                successLine = successLine.AddListItem(String.Format("Compressed to '{0}' ({1})", path, compressor.Statistics), " ");
+                            }
+                            else
+                            {
+                                successLine = successLine.AddListItem("Errors were reported by the compressor. It's weird, but try running YUI validation."," ");
+                            }
+                        }
+
+                        catch (Exception e)
+                        {
+                            successLine=successLine.AddListItem(String.Format("Unable to compress output to '{0}': {1}", target, e.Message)," ");
+                        }
+                    }
+                    SummaryInfo.Add(successLine);
                 }
                 fileErrors.Sort(LintDataComparer);
                 allErrors.AddRange(fileErrors);                
@@ -172,7 +189,8 @@ namespace JTC.SharpLinter.Config
 
                 foreach (JsLintData error in allErrors)
                 {
-                    Console.WriteLine(string.Format(OutputFormat, error.FilePath, error.Line, error.Source, error.Reason, error.Character));
+                    string character = error.Character>=0 ? "at character " + error.Character : String.Empty;
+                    Console.WriteLine(string.Format(OutputFormat, error.FilePath, error.Line, error.Source, error.Reason,character));
                 }
             }
             if (Configuration.Verbose)
@@ -188,7 +206,7 @@ namespace JTC.SharpLinter.Config
                 }
             }
         }
-        private  string MapFileName(string path, string mask)
+        private string MapFileName(string path, string mask)
         {
             if (mask.OccurrencesOf("*") != 1)
             {

@@ -126,6 +126,7 @@ namespace JTC.SharpLinter
                         if (arg=="-ph") {
                             finalConfig.MinimizeKeepHeader = true;
                         }
+                        finalConfig.CompressorType = compressorType;
                         i+=2;
                         break;
                     case "-y":
@@ -253,7 +254,7 @@ namespace JTC.SharpLinter
             }
             catch(Exception e)
             {
-                Console.WriteLine("Everything was looking good on your command line, but the parser threw an error: "+ e.Message);
+                Console.WriteLine("Everything was looking good on your command line, but the parser threw an error: "+ e.Message +" , " + e.StackTrace );
                 goto exit;
             }
             

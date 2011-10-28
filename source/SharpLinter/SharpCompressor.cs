@@ -37,7 +37,7 @@ namespace JTC.SharpLinter
                 compressor = new JavaScriptCompressor(javascript, true, Encoding.UTF8,
                 System.Globalization.CultureInfo.CurrentCulture,
                 AllowEval, Reporter);
-                string compressed = compressor.Compress();
+                string compressed = compressor.Compress(true,false,false,0);
             }
             catch
             {
@@ -49,7 +49,7 @@ namespace JTC.SharpLinter
         public void Clear()
         {
             Reporter.Clear();
-            CompressorType = CompressorType.best;
+            //CompressorType = CompressorType.best;
             Input = null;
             Statistics = null;
             //Input = null;
@@ -127,18 +127,17 @@ namespace JTC.SharpLinter
                 System.Globalization.CultureInfo.CurrentCulture,
                     true,
                     reporter);
-                compressedYui = compressor.Compress();
+                compressedYui = compressor.Compress(true, false, false, 0);
             }
             if (CompressorType == CompressorType.packer || CompressorType == CompressorType.best)
             {
                 JavascriptPacker jsPacker = new JavascriptPacker(JavascriptPacker.PackerEncoding.None, false, false);
-
                 compressedPacker = jsPacker.Pack(javascript);
             }
             CompressorType finalPacker = CompressorType != CompressorType.best ? CompressorType :
                     (compressedYui.Length < compressedPacker.Length ? CompressorType.yui : CompressorType.packer);
 
-            Output = header + (CompressorType == CompressorType.yui ? compressedYui : compressedPacker);
+            Output = header + (finalPacker == CompressorType.yui ? compressedYui : compressedPacker);
 
             Statistics = finalPacker.ToString() + ": " + javascript.Length + "/" + Output.Length + ", " + Math.Round(100 * ((decimal)Output.Length / (decimal)javascript.Length), 0) + "%";
             return Success;
