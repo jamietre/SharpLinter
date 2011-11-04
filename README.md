@@ -228,11 +228,11 @@ SharpLinter can also be configured as an external tool in the Textpad editor.
 4. Edit "Parameters" so it is a complete command line with any options you want.
    Use "$File" for the current file, e.g.
    
-   D:\Applications\JSLint\SharpLinter.exe --ph best *.min.js -r $File
+    D:\Applications\JSLint\SharpLinter.exe --ph best *.min.js -r $File
 
 5. Enter the following regular expression:
 
-   ^\(.*\)(\([0-9]+\))
+    ^\(.*\)(\([0-9]+\))
    
 6. Choose "1" for File, and "2" for Line under the regex input.
 
