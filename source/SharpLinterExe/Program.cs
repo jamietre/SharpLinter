@@ -82,9 +82,11 @@ namespace JTC.SharpLinter
 
             //string commandlineConfig = String.Empty;
             string commandLineOptions = String.Empty;
-            string globalConfigFile = "jslint.conf";
+            string globalConfigFile = "sharplinter.conf";
+            string defaultGlobalConfigFile = globalConfigFile;
             string excludeFiles = String.Empty;
             string jsLintSource = "jslint.js";
+            string defaultJsLintSource = jsLintSource;
 
             HashSet<PathInfo> filePaths = new HashSet<PathInfo>();
 
@@ -184,15 +186,27 @@ namespace JTC.SharpLinter
 
             if (!String.IsNullOrEmpty(jsLintSource))
             {
+                
                 jsLintSource = Utility.ResolveRelativePath_AppRoot(jsLintSource);
-                try
+                if (File.Exists(jsLintSource))
                 {
-                    finalConfig.JsLintCode = File.ReadAllText(jsLintSource);
+                    try
+                    {
+                        finalConfig.JsLintCode = File.ReadAllText(jsLintSource);
+                    }
+                    catch
+                    {
+                        Console.WriteLine(String.Format("The JSLINT/JSHINT file \"{0}\" appears to be invalid.", jsLintSource));
+                        goto exit;
+                    }
                 }
-                catch
+                else
                 {
-                    Console.WriteLine(String.Format("The JSLINT/JSHINT file \"{0}\" appears to be invalid.", jsLintSource));
-                    goto exit;
+                    if (jsLintSource != defaultJsLintSource)
+                    {
+                        Console.WriteLine(String.Format("The JSLINT/JSHINT file \"{0}\" does not exist.", jsLintSource));
+                        goto exit;
+                    }
                 }
             }
             else
@@ -234,8 +248,11 @@ namespace JTC.SharpLinter
                 }
                 else
                 {
-                    Console.WriteLine(String.Format("Cannot find global configuration file {0}", globalConfigFile));
-                    goto exit;
+                    if (globalConfigFile != defaultGlobalConfigFile)
+                    {
+                        Console.WriteLine(String.Format("Cannot find global configuration file {0}", globalConfigFile));
+                        goto exit;
+                    }
                 }
             }
 

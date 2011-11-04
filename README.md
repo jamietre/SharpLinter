@@ -64,16 +64,20 @@ Basic usage: Process all files in the current directory:
 Detailed usage:
 
     
-    sharplinter [-[r]f /path/*.js] [-o options] [-v]
+    sharplinter [-o options] [-v]
             [-c sharplinter.conf] [-j jslint.js] [-y]
             [-p[h] yui|packer|best mask] [-k]
             [-i ignore-start ignore-end] [-if text] [-of "format"]
+            [-[r]f /path/*.js] [filemame1 filename2 ...] 
 
     Options:
 
 
     -[r]f c:\scripts\*.js     parse all files matching "*.js" in "c:\scripts"
                               if called with "r", will recurse subfolders
+                              The "f" is optional, any parameters passed 
+                              without an option will be treated as files.
+                              
     -o "option option ..."    set jslint/jshint options specified, separated by
                               spaces, in format "option" or "option: true|false"
                               
@@ -81,10 +85,14 @@ Detailed usage:
 
     -k                        Wait for a keytroke when done
     
-    -c c:\sharplinter.conf    load config options from file specified
+    -c c:\sharplinter.conf    load config options from file specified. if omitted, will 
+                              attempt to read a file 'sharplinter.conf' in the application
+                              directory
     
     -j jslint.js              use file specified to parse files instead of embedded
-                              (probably old) script
+                              (probably old) script. if omitted, will attempt first to
+                              read the file 'jslint.js' from the application director,
+                              and will fall back on the embedded file.
                               
     -y                        Also run the script through YUI compressor to look for
                               errors
@@ -210,3 +218,22 @@ You can also set it up to process all the files in your project. Make another en
 
 for example, to process all files in the "scripts" subfolder of your project, but skip the folder "thirdparty" within "scripts" and don't try to process minimized files.
 
+# TextPad
+
+SharpLinter can also be configured as an external tool in the Textpad editor.
+
+1. Configure -> Preferences -> Tools and click "Add -> DOS Command"
+2. Enter the full path to sharplinter.exe
+3. Select the new tool from Preferences tree end edit options.
+4. Edit "Parameters" so it is a complete command line with any options you want.
+   Use "$File" for the current file, e.g.
+   
+   D:\Applications\JSLint\SharpLinter.exe --ph best *.min.js -r $File
+
+5. Enter the following regular expression:
+
+   ^\(.*\)(\([0-9]+\))
+   
+6. Choose "1" for File, and "2" for Line under the regex input.
+
+Now you're done. Set up a keyboard shortcut, and it will process the active file. You can click a line in the output window to jump to it in the editor.
