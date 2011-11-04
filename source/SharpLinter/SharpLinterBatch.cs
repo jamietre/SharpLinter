@@ -38,6 +38,11 @@ namespace JTC.SharpLinter.Config
             Configuration = configuration;
             OutputFormat = "{0}({1}): ({2}) {3} {4}";
         }
+        protected string StringOrMissingDescription(string text)
+        {
+            return String.IsNullOrEmpty(text) ? "[None Specified]" : text;
+
+        }
         public void Process()
         {
             SharpLinter lint = new SharpLinter(Configuration);
@@ -46,9 +51,10 @@ namespace JTC.SharpLinter.Config
             if (Configuration.Verbose)
             {
                 Console.WriteLine(String.Format("SharpLinter: Beginning processing at {0:MM/dd/yy H:mm:ss zzz}", DateTime.Now));
-                Console.WriteLine(String.Format("Using linter options for {0}, {1}",Configuration.LinterType.ToString(),Configuration.JsLintVersion));
-                Console.WriteLine("LINT options: " + Configuration.OptionsToString());
-                Console.WriteLine("LINT globals: " + Configuration.GlobalsToString());
+                Console.WriteLine(String.Format("Global configuration file: {0}",StringOrMissingDescription(Configuration.GlobalConfigFile)));
+                Console.WriteLine(String.Format("Using linter options for {0}, {1}",Configuration.LinterType.ToString(),StringOrMissingDescription(Configuration.JsLintVersion)));
+                Console.WriteLine("LINT options: " + StringOrMissingDescription(Configuration.OptionsToString()));
+                Console.WriteLine("LINT globals: " + StringOrMissingDescription(Configuration.GlobalsToString()));
                 Console.WriteLine("Sharplint: ignorestart={0}, ignoreend={1}, ignorefile={2}",Configuration.IgnoreStart,Configuration.IgnoreEnd,Configuration.IgnoreFile);
                 Console.WriteLine("Input paths: (working directory=" + Directory.GetCurrentDirectory()+")");
                 foreach (var file in FilePaths)

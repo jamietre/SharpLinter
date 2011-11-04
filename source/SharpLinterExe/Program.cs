@@ -20,6 +20,7 @@ namespace JTC.SharpLinter
 
     class SharpLinterExe
     {
+
         static void Main(string[] args)
         {
             Lazy<JsLintConfiguration> _Configuration = new Lazy<JsLintConfiguration>();
@@ -81,13 +82,15 @@ namespace JTC.SharpLinter
 
             //string commandlineConfig = String.Empty;
             string commandLineOptions = String.Empty;
-            string globalConfigFile = String.Empty;
+            string globalConfigFile = "jslint.conf";
             string excludeFiles = String.Empty;
-            string jsLintSource = String.Empty;
+            string jsLintSource = "jslint.js";
 
             HashSet<PathInfo> filePaths = new HashSet<PathInfo>();
 
             bool readKey = false;
+            bool recurse  = false;
+
             LinterType linterType = 0;
 
             CompressorType compressorType = 0;
@@ -133,18 +136,13 @@ namespace JTC.SharpLinter
                         finalConfig.YUIValidation = true;
                         break;
                     case "-c":
-                        if (!String.IsNullOrEmpty(globalConfigFile))
-                        {
-                            Console.WriteLine("Multiple config files specified.");
-                            goto exit;
-                        }
-                        globalConfigFile =Utility.ResolveRelativePath(value);
+                        globalConfigFile = value;
                         i++;
 						break;
                     case "-j":
 
                         if (File.Exists(value)) {
-                            jsLintSource = Utility.ResolveRelativePath(value);
+                            jsLintSource = value;
                         } else {
                             Console.WriteLine(String.Format("Cannot find JSLint source file {0}",value));
                             goto exit;
@@ -159,6 +157,9 @@ namespace JTC.SharpLinter
                         filePaths.Add(new PathInfo(value, arg == "-rf"));
                         i++;
 						break;
+                    case "-r":
+                        recurse = true;
+                        break;
 					case "-o":
                         commandLineOptions = commandLineOptions.AddListItem(value, " ");
                         i++;
@@ -170,12 +171,20 @@ namespace JTC.SharpLinter
                     case "-v":
                         finalConfig.Verbose = true;
                         break;
+                    default:
+                        if (arg[0] == '-')
+                        {
+                            throw new Exception("Unrecognized command line option \"" + arg + "\"");
+                        }
+                        filePaths.Add(new PathInfo(arg, recurse));
+                        break;
 				}
 			}
             // Done parsing options
 
             if (!String.IsNullOrEmpty(jsLintSource))
             {
+                jsLintSource = Utility.ResolveRelativePath_AppRoot(jsLintSource);
                 try
                 {
                     finalConfig.JsLintCode = File.ReadAllText(jsLintSource);
@@ -209,11 +218,13 @@ namespace JTC.SharpLinter
             // Get global config first.
             if (!String.IsNullOrEmpty(globalConfigFile))
             {
+                globalConfigFile = Utility.ResolveRelativePath_AppRoot(globalConfigFile);
                 if (File.Exists(globalConfigFile))
                 {
                     try
                     {
                         finalConfig.MergeOptions(JsLintConfiguration.ParseConfigFile(File.ReadAllText(globalConfigFile), linterType));
+                        finalConfig.GlobalConfigFile = globalConfigFile;
                     }
                     catch (Exception e)
                     {

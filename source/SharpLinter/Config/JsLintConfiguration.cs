@@ -33,6 +33,14 @@ namespace JTC.SharpLinter.Config
 
 		}
         /// <summary>
+        /// The path of the global config file
+        /// </summary>
+        public string GlobalConfigFile
+        {
+            get;
+            set;
+        }
+        /// <summary>
         /// The javascript code that will be used to parse the input file. 
         /// </summary>
         public string JsLintCode {
@@ -546,7 +554,7 @@ namespace JTC.SharpLinter.Config
             bool hasItems = false;
             foreach (var item in paths)
             {
-                string value = Utility.ResolveRelativePath(item.Path);
+                string value = Utility.ResolveRelativePath_Current(item.Path);
 
                 string filter = null;
                 if (value.Contains("*"))

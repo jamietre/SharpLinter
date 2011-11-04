@@ -55,22 +55,27 @@ namespace JTC.SharpLinter
     }
     public static class Utility
     {
-       
         /// <summary>
-        /// Qualifies a relative path file
+        /// Resolves a path, using the application root as the path for nonrooted files
+        /// </summary>
+        /// <returns></returns>
+        public static string ResolveRelativePath_AppRoot(string path)
+        {
+            return Path.IsPathRooted(path) ?
+                path: 
+                System.Reflection.Assembly.GetExecutingAssembly().Location.BeforeLast("\\") + "\\" + path;
+            
+        }
+        /// <summary>
+        /// Qualifies a relative path file, using the current directory for non rooted files
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static string ResolveRelativePath(string path)
+        public static string ResolveRelativePath_Current(string path)
         {
-            if (!Path.IsPathRooted(path))
-            {
-                return Directory.GetCurrentDirectory() + "\\" + path;
-            }
-            else
-            {
-                return path;
-            }
+            return Path.IsPathRooted(path) ?
+            path:
+            Directory.GetCurrentDirectory() + "\\" + path;
         }
         /// <summary>
         /// Evaluates the string to determine whether the value is true or false. Valid true strings are any form of "yes," "true," "on," or the digit "1"
