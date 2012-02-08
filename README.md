@@ -201,7 +201,9 @@ to configure it as an external tool. Do the following:
 3. Set "Command" to the path of the executable.
 4. Set arguments to something like this:
 
-    -y -f $(ItemPath) -c "path/to/my/config" 
+    -ph best *.min.js -f $(ItemPath) 
+    
+    This will process the active file and compress it to filename.min.js if validation passes.
 
 5. Check "Output Window"
 
@@ -228,7 +230,7 @@ SharpLinter can also be configured as an external tool in the Textpad editor.
 4. Edit "Parameters" so it is a complete command line with any options you want.
    Use "$File" for the current file, e.g.
    
-    D:\Applications\JSLint\SharpLinter.exe --ph best *.min.js -r $File
+    C:\Program Files\SharpLinter\SharpLinter.exe --ph best *.min.js -r $File
 
 5. Enter the following regular expression:
 

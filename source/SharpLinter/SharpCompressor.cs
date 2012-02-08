@@ -37,7 +37,8 @@ namespace JTC.SharpLinter
                 compressor = new JavaScriptCompressor(javascript, true, Encoding.UTF8,
                 System.Globalization.CultureInfo.CurrentCulture,
                 AllowEval, Reporter);
-                string compressed = compressor.Compress(true,false,false,0);
+                
+                string compressed = compressor.Compress(true,true,false,80);
             }
             catch
             {
@@ -127,7 +128,7 @@ namespace JTC.SharpLinter
                 System.Globalization.CultureInfo.CurrentCulture,
                     true,
                     reporter);
-                compressedYui = compressor.Compress(true, false, false, 0);
+                compressedYui = compressor.Compress(true, true, false, 80);
             }
             if (CompressorType == CompressorType.packer || CompressorType == CompressorType.best)
             {
