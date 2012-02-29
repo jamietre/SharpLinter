@@ -6,23 +6,24 @@ using Jint;
 
 namespace JTC.SharpLinter.Engines
 {
-    
-    public class Jint : IJSEngineWrapper
-    {
-        public Jint()
-        {
-            JintEngine = new JintEngine();
-        }
-        protected JintEngine JintEngine;
-        public object Run(string code)
-        {
-            return JintEngine.Run(code);
-        }
+    // Testing using Jint. It didn't work. Leaving this here as a stub in case we want to try a future version.
 
-        public void SetParameter(string name, object value)
-        {
-            JintEngine.SetParameter(name, value);
-        }
-    }
+    //public class Jint : IJSEngineWrapper
+    //{
+    //    public Jint()
+    //    {
+    //        JintEngine = new JintEngine();
+    //    }
+    //    protected JintEngine JintEngine;
+    //    public object Run(string code)
+    //    {
+    //        return JintEngine.Run(code);
+    //    }
+
+    //    public void SetParameter(string name, object value)
+    //    {
+    //        JintEngine.SetParameter(name, value);
+    //    }
+    //}
     
 }
