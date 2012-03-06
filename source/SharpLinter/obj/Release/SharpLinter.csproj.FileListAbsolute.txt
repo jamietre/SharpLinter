@@ -1,0 +1,8 @@
+D:\VSProjects\SharpLinter\source\SharpLinter\bin\Release\JTC.SharpLinter.dll
+D:\VSProjects\SharpLinter\source\SharpLinter\bin\Release\JTC.SharpLinter.pdb
+D:\VSProjects\SharpLinter\source\SharpLinter\bin\Release\EcmaScript.NET.modified.dll
+D:\VSProjects\SharpLinter\source\SharpLinter\bin\Release\Noesis.Javascript.dll
+D:\VSProjects\SharpLinter\source\SharpLinter\bin\Release\Yahoo.Yui.Compressor.dll
+D:\VSProjects\SharpLinter\source\SharpLinter\obj\Release\ResolveAssemblyReference.cache
+D:\VSProjects\SharpLinter\source\SharpLinter\obj\Release\JTC.SharpLinter.dll
+D:\VSProjects\SharpLinter\source\SharpLinter\obj\Release\JTC.SharpLinter.pdb

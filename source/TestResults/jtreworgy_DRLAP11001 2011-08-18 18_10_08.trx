@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="e3e3638e-9c06-44bc-8a63-1f82cb06dcb7" name="jtreworgy@DRLAP11001 2011-08-18 18:10:08" runUser="DRINTL\jtreworgy" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Local" id="535d67f2-abde-47ed-8632-e8236b4a7c05">
+    <Description>These are default test settings for a local test run.</Description>
+    <Deployment enabled="false" runDeploymentRoot="jtreworgy_DRLAP11001 2011-08-18 18_10_08">
+      <DeploymentItem filename="D:\VSProjects\SharpLinter\source\SharpLinter\bin\Release\JTC.SharpLinter.dll" />
+    </Deployment>
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+  </TestSettings>
+  <Times creation="2011-08-18T18:10:08.5596804-04:00" queuing="2011-08-18T18:10:08.9537198-04:00" start="2011-08-18T18:10:09.0605261-04:00" finish="2011-08-18T18:10:09.3665567-04:00" />
+  <ResultSummary outcome="Failed">
+    <Counters total="7" executed="7" passed="4" error="0" failed="3" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="TestArgumentParsing2" storage="d:\vsprojects\sharplinter\source\sharplinter.test\bin\release\jtc.sharplinter.test.dll" id="2f8c5f57-2a99-e899-cc72-76f3da566696">
+      <Execution id="c23ef2d1-b742-487e-9f3d-9183da0b9f8b" />
+      <TestMethod codeBase="D:/VSProjects/SharpLinter/source/SharpLinter.Test/bin/Release/JTC.SharpLinter.Test.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JTC.SharpLinter.Test.LinterUnitTests, JTC.SharpLinter.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="TestArgumentParsing2" />
+    </UnitTest>
+    <UnitTest name="ConfigFile" storage="d:\vsprojects\sharplinter\source\sharplinter.test\bin\release\jtc.sharplinter.test.dll" id="311b004a-0c35-0a1a-a65a-be5fcea666e1">
+      <Execution id="7fd08ac8-5012-4d9d-8ca8-656e6c79830a" />
+      <TestMethod codeBase="D:/VSProjects/SharpLinter/source/SharpLinter.Test/bin/Release/JTC.SharpLinter.Test.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JTC.SharpLinter.Test.ConfigurationTests, JTC.SharpLinter.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="ConfigFile" />
+    </UnitTest>
+    <UnitTest name="TestMultipleDifferentOptions" storage="d:\vsprojects\sharplinter\source\sharplinter.test\bin\release\jtc.sharplinter.test.dll" id="bf973ccf-c97a-ddff-03cd-cc92ccc7f41c">
+      <Execution id="4e3ea079-3746-4175-b631-c5dfb8c57b80" />
+      <TestMethod codeBase="D:/VSProjects/SharpLinter/source/SharpLinter.Test/bin/Release/JTC.SharpLinter.Test.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JTC.SharpLinter.Test.LinterUnitTests, JTC.SharpLinter.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="TestMultipleDifferentOptions" />
+    </UnitTest>
+    <UnitTest name="Config" storage="d:\vsprojects\sharplinter\source\sharplinter.test\bin\release\jtc.sharplinter.test.dll" id="60e71ec1-68c3-50e8-f004-f6769f3b8b15">
+      <Execution id="8617720a-b5a5-481b-a21c-21924f6c09a1" />
+      <TestMethod codeBase="D:/VSProjects/SharpLinter/source/SharpLinter.Test/bin/Release/JTC.SharpLinter.Test.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JTC.SharpLinter.Test.ConfigurationTests, JTC.SharpLinter.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="Config" />
+    </UnitTest>
+    <UnitTest name="TestArgumentParsing" storage="d:\vsprojects\sharplinter\source\sharplinter.test\bin\release\jtc.sharplinter.test.dll" id="7048c88f-e27e-8226-2067-43ff78bfd264">
+      <Execution id="d309badb-9d03-4368-928f-ee97fe7ed65a" />
+      <TestMethod codeBase="D:/VSProjects/SharpLinter/source/SharpLinter.Test/bin/Release/JTC.SharpLinter.Test.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JTC.SharpLinter.Test.LinterUnitTests, JTC.SharpLinter.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="TestArgumentParsing" />
+    </UnitTest>
+    <UnitTest name="TestMultipleCalls" storage="d:\vsprojects\sharplinter\source\sharplinter.test\bin\release\jtc.sharplinter.test.dll" id="35feaefd-e6d6-c52e-73ac-426128d82824">
+      <Execution id="9b457ff9-dc09-4956-8995-c19d7cdcfbba" />
+      <TestMethod codeBase="D:/VSProjects/SharpLinter/source/SharpLinter.Test/bin/Release/JTC.SharpLinter.Test.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JTC.SharpLinter.Test.LinterUnitTests, JTC.SharpLinter.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="TestMultipleCalls" />
+    </UnitTest>
+    <UnitTest name="FilePathMatcherTest" storage="d:\vsprojects\sharplinter\source\sharplinter.test\bin\release\jtc.sharplinter.test.dll" id="0270dd9c-9d05-8f49-051a-4fceb32e6057">
+      <Execution id="2897caa1-0908-4258-94e8-086069f83018" />
+      <TestMethod codeBase="D:/VSProjects/SharpLinter/source/SharpLinter.Test/bin/Release/JTC.SharpLinter.Test.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JTC.SharpLinter.Test.UtilityUnitTests, JTC.SharpLinter.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="FilePathMatcherTest" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="35feaefd-e6d6-c52e-73ac-426128d82824" executionId="9b457ff9-dc09-4956-8995-c19d7cdcfbba" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="311b004a-0c35-0a1a-a65a-be5fcea666e1" executionId="7fd08ac8-5012-4d9d-8ca8-656e6c79830a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0270dd9c-9d05-8f49-051a-4fceb32e6057" executionId="2897caa1-0908-4258-94e8-086069f83018" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="60e71ec1-68c3-50e8-f004-f6769f3b8b15" executionId="8617720a-b5a5-481b-a21c-21924f6c09a1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2f8c5f57-2a99-e899-cc72-76f3da566696" executionId="c23ef2d1-b742-487e-9f3d-9183da0b9f8b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7048c88f-e27e-8226-2067-43ff78bfd264" executionId="d309badb-9d03-4368-928f-ee97fe7ed65a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bf973ccf-c97a-ddff-03cd-cc92ccc7f41c" executionId="4e3ea079-3746-4175-b631-c5dfb8c57b80" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="9b457ff9-dc09-4956-8995-c19d7cdcfbba" testId="35feaefd-e6d6-c52e-73ac-426128d82824" testName="TestMultipleCalls" computerName="DRLAP11001" duration="00:00:00.0612514" startTime="2011-08-18T18:10:09.0605261-04:00" endTime="2011-08-18T18:10:09.2765477-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9b457ff9-dc09-4956-8995-c19d7cdcfbba">
+      <Output>
+        <ErrorInfo>
+          <Message>Test method JTC.SharpLinter.Test.LinterUnitTests.TestMultipleCalls threw exception: 
+System.Exception: No source specified.</Message>
+          <StackTrace>    at JTC.SharpLinter.SharpLinter.Initialize(String jsLintSource) in D:\VSProjects\SharpLinter\source\SharpLinter\SharpLinter.cs:line 58
+   at JTC.SharpLinter.SharpLinter..ctor() in D:\VSProjects\SharpLinter\source\SharpLinter\SharpLinter.cs:line 44
+   at JTC.SharpLinter.Test.LinterUnitTests.TestMultipleCalls() in D:\VSProjects\SharpLinter\source\SharpLinter.Test\LinterUnitTests.cs:line 35
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7fd08ac8-5012-4d9d-8ca8-656e6c79830a" testId="311b004a-0c35-0a1a-a65a-be5fcea666e1" testName="ConfigFile" computerName="DRLAP11001" duration="00:00:00.0200565" startTime="2011-08-18T18:10:09.2775478-04:00" endTime="2011-08-18T18:10:09.2995500-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7fd08ac8-5012-4d9d-8ca8-656e6c79830a">
+      <Output>
+        <ErrorInfo>
+          <Message>Test method JTC.SharpLinter.Test.ConfigurationTests.ConfigFile threw exception: 
+System.Exception: Config section 'jslint' was not closed.</Message>
+          <StackTrace>    at JTC.SharpLinter.Config.ConfigFileParser.GetSection(String sectionName) in D:\VSProjects\SharpLinter\source\SharpLinter\Config\ConfigFileParser.cs:line 55
+   at JTC.SharpLinter.Config.ConfigFileParser.&lt;GetKVPSection&gt;d__0.MoveNext() in D:\VSProjects\SharpLinter\source\SharpLinter\Config\ConfigFileParser.cs:line 21
+   at JTC.SharpLinter.Config.JsLintConfiguration.ParseConfigFile(String configFileData, LinterType linterType) in D:\VSProjects\SharpLinter\source\SharpLinter\Config\JsLintConfiguration.cs:line 628
+   at JTC.SharpLinter.Config.JsLintConfiguration.MergeOptions(String configFile) in D:\VSProjects\SharpLinter\source\SharpLinter\Config\JsLintConfiguration.cs:line 524
+   at JTC.SharpLinter.Test.ConfigurationTests.ConfigFile() in D:\VSProjects\SharpLinter\source\SharpLinter.Test\ConfigurationTests.cs:line 55
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2897caa1-0908-4258-94e8-086069f83018" testId="0270dd9c-9d05-8f49-051a-4fceb32e6057" testName="FilePathMatcherTest" computerName="DRLAP11001" duration="00:00:00.0194559" startTime="2011-08-18T18:10:09.3005501-04:00" endTime="2011-08-18T18:10:09.3215522-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2897caa1-0908-4258-94e8-086069f83018">
+    </UnitTestResult>
+    <UnitTestResult executionId="8617720a-b5a5-481b-a21c-21924f6c09a1" testId="60e71ec1-68c3-50e8-f004-f6769f3b8b15" testName="Config" computerName="DRLAP11001" duration="00:00:00.0080967" startTime="2011-08-18T18:10:09.3225523-04:00" endTime="2011-08-18T18:10:09.3325533-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8617720a-b5a5-481b-a21c-21924f6c09a1">
+    </UnitTestResult>
+    <UnitTestResult executionId="c23ef2d1-b742-487e-9f3d-9183da0b9f8b" testId="2f8c5f57-2a99-e899-cc72-76f3da566696" testName="TestArgumentParsing2" computerName="DRLAP11001" duration="00:00:00.0027816" startTime="2011-08-18T18:10:09.3335534-04:00" endTime="2011-08-18T18:10:09.3385539-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c23ef2d1-b742-487e-9f3d-9183da0b9f8b">
+    </UnitTestResult>
+    <UnitTestResult executionId="d309badb-9d03-4368-928f-ee97fe7ed65a" testId="7048c88f-e27e-8226-2067-43ff78bfd264" testName="TestArgumentParsing" computerName="DRLAP11001" duration="00:00:00.0018439" startTime="2011-08-18T18:10:09.3385539-04:00" endTime="2011-08-18T18:10:09.3425543-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d309badb-9d03-4368-928f-ee97fe7ed65a">
+    </UnitTestResult>
+    <UnitTestResult executionId="4e3ea079-3746-4175-b631-c5dfb8c57b80" testId="bf973ccf-c97a-ddff-03cd-cc92ccc7f41c" testName="TestMultipleDifferentOptions" computerName="DRLAP11001" duration="00:00:00.0025003" startTime="2011-08-18T18:10:09.3435544-04:00" endTime="2011-08-18T18:10:09.3475548-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4e3ea079-3746-4175-b631-c5dfb8c57b80">
+      <Output>
+        <ErrorInfo>
+          <Message>Test method JTC.SharpLinter.Test.LinterUnitTests.TestMultipleDifferentOptions threw exception: 
+System.Exception: No source specified.</Message>
+          <StackTrace>    at JTC.SharpLinter.SharpLinter.Initialize(String jsLintSource) in D:\VSProjects\SharpLinter\source\SharpLinter\SharpLinter.cs:line 58
+   at JTC.SharpLinter.SharpLinter..ctor() in D:\VSProjects\SharpLinter\source\SharpLinter\SharpLinter.cs:line 44
+   at JTC.SharpLinter.Test.LinterUnitTests.TestMultipleDifferentOptions() in D:\VSProjects\SharpLinter\source\SharpLinter.Test\LinterUnitTests.cs:line 58
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+</TestRun>

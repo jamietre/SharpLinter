@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="ebdb9e4f-99ec-489d-a7fd-17285286bd5f" name="jtreworgy@DRLAP11001 2011-08-17 08:51:09" runUser="DRINTL\jtreworgy" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Local" id="535d67f2-abde-47ed-8632-e8236b4a7c05">
+    <Description>These are default test settings for a local test run.</Description>
+    <Deployment enabled="false" runDeploymentRoot="jtreworgy_DRLAP11001 2011-08-17 08_51_09">
+      <DeploymentItem filename="D:\VSProjects\SharpLinter\source\SharpLinter\bin\Debug\JTC.SharpLinter.dll" />
+    </Deployment>
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+  </TestSettings>
+  <Times creation="2011-08-17T08:51:09.5952383-04:00" queuing="2011-08-17T08:51:10.2912656-04:00" start="2011-08-17T08:51:10.3412706-04:00" finish="2011-08-17T08:51:11.0553420-04:00" />
+  <ResultSummary outcome="Completed">
+    <Counters total="7" executed="7" passed="7" error="0" failed="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="TestArgumentParsing2" storage="d:\vsprojects\sharplinter\source\sharplinter.test\bin\debug\jtc.sharplinter.test.dll" id="2f8c5f57-2a99-e899-cc72-76f3da566696">
+      <Execution id="ebc1b850-8f01-44a1-8ad9-d0c470f49a33" />
+      <TestMethod codeBase="D:/VSProjects/SharpLinter/source/SharpLinter.Test/bin/Debug/JTC.SharpLinter.Test.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JTC.SharpLinter.Test.LinterUnitTests, JTC.SharpLinter.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="TestArgumentParsing2" />
+    </UnitTest>
+    <UnitTest name="ConfigFile" storage="d:\vsprojects\sharplinter\source\sharplinter.test\bin\debug\jtc.sharplinter.test.dll" id="311b004a-0c35-0a1a-a65a-be5fcea666e1">
+      <Execution id="9ea6d554-6081-4c31-b671-cc37ff7dcbcb" />
+      <TestMethod codeBase="D:/VSProjects/SharpLinter/source/SharpLinter.Test/bin/Debug/JTC.SharpLinter.Test.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JTC.SharpLinter.Test.ConfigurationTests, JTC.SharpLinter.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="ConfigFile" />
+    </UnitTest>
+    <UnitTest name="TestMultipleDifferentOptions" storage="d:\vsprojects\sharplinter\source\sharplinter.test\bin\debug\jtc.sharplinter.test.dll" id="bf973ccf-c97a-ddff-03cd-cc92ccc7f41c">
+      <Execution id="ab5100bd-42ad-4a26-a4c3-959d7410cb8b" />
+      <TestMethod codeBase="D:/VSProjects/SharpLinter/source/SharpLinter.Test/bin/Debug/JTC.SharpLinter.Test.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JTC.SharpLinter.Test.LinterUnitTests, JTC.SharpLinter.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="TestMultipleDifferentOptions" />
+    </UnitTest>
+    <UnitTest name="Config" storage="d:\vsprojects\sharplinter\source\sharplinter.test\bin\debug\jtc.sharplinter.test.dll" id="60e71ec1-68c3-50e8-f004-f6769f3b8b15">
+      <Execution id="05bcde79-a2ac-4f8c-81b4-2f300d7b2598" />
+      <TestMethod codeBase="D:/VSProjects/SharpLinter/source/SharpLinter.Test/bin/Debug/JTC.SharpLinter.Test.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JTC.SharpLinter.Test.ConfigurationTests, JTC.SharpLinter.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="Config" />
+    </UnitTest>
+    <UnitTest name="TestArgumentParsing" storage="d:\vsprojects\sharplinter\source\sharplinter.test\bin\debug\jtc.sharplinter.test.dll" id="7048c88f-e27e-8226-2067-43ff78bfd264">
+      <Execution id="9b9a0b0e-4418-4683-a0db-cbbfb5b8d3d1" />
+      <TestMethod codeBase="D:/VSProjects/SharpLinter/source/SharpLinter.Test/bin/Debug/JTC.SharpLinter.Test.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JTC.SharpLinter.Test.LinterUnitTests, JTC.SharpLinter.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="TestArgumentParsing" />
+    </UnitTest>
+    <UnitTest name="TestMultipleCalls" storage="d:\vsprojects\sharplinter\source\sharplinter.test\bin\debug\jtc.sharplinter.test.dll" id="35feaefd-e6d6-c52e-73ac-426128d82824">
+      <Execution id="2327fbc7-3c3a-47d4-8e4c-6c54deadb03d" />
+      <TestMethod codeBase="D:/VSProjects/SharpLinter/source/SharpLinter.Test/bin/Debug/JTC.SharpLinter.Test.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JTC.SharpLinter.Test.LinterUnitTests, JTC.SharpLinter.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="TestMultipleCalls" />
+    </UnitTest>
+    <UnitTest name="FilePathMatcherTest" storage="d:\vsprojects\sharplinter\source\sharplinter.test\bin\debug\jtc.sharplinter.test.dll" id="0270dd9c-9d05-8f49-051a-4fceb32e6057">
+      <Execution id="93ce90d6-b6a5-4818-8677-f837b93f24df" />
+      <TestMethod codeBase="D:/VSProjects/SharpLinter/source/SharpLinter.Test/bin/Debug/JTC.SharpLinter.Test.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="JTC.SharpLinter.Test.UtilityUnitTests, JTC.SharpLinter.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="FilePathMatcherTest" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="35feaefd-e6d6-c52e-73ac-426128d82824" executionId="2327fbc7-3c3a-47d4-8e4c-6c54deadb03d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="311b004a-0c35-0a1a-a65a-be5fcea666e1" executionId="9ea6d554-6081-4c31-b671-cc37ff7dcbcb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0270dd9c-9d05-8f49-051a-4fceb32e6057" executionId="93ce90d6-b6a5-4818-8677-f837b93f24df" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="60e71ec1-68c3-50e8-f004-f6769f3b8b15" executionId="05bcde79-a2ac-4f8c-81b4-2f300d7b2598" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2f8c5f57-2a99-e899-cc72-76f3da566696" executionId="ebc1b850-8f01-44a1-8ad9-d0c470f49a33" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7048c88f-e27e-8226-2067-43ff78bfd264" executionId="9b9a0b0e-4418-4683-a0db-cbbfb5b8d3d1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bf973ccf-c97a-ddff-03cd-cc92ccc7f41c" executionId="ab5100bd-42ad-4a26-a4c3-959d7410cb8b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="2327fbc7-3c3a-47d4-8e4c-6c54deadb03d" testId="35feaefd-e6d6-c52e-73ac-426128d82824" testName="TestMultipleCalls" computerName="DRLAP11001" duration="00:00:00.0913619" startTime="2011-08-17T08:51:10.3682733-04:00" endTime="2011-08-17T08:51:10.9183283-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2327fbc7-3c3a-47d4-8e4c-6c54deadb03d">
+    </UnitTestResult>
+    <UnitTestResult executionId="9ea6d554-6081-4c31-b671-cc37ff7dcbcb" testId="311b004a-0c35-0a1a-a65a-be5fcea666e1" testName="ConfigFile" computerName="DRLAP11001" duration="00:00:00.0086513" startTime="2011-08-17T08:51:10.9293294-04:00" endTime="2011-08-17T08:51:10.9433308-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9ea6d554-6081-4c31-b671-cc37ff7dcbcb">
+    </UnitTestResult>
+    <UnitTestResult executionId="93ce90d6-b6a5-4818-8677-f837b93f24df" testId="0270dd9c-9d05-8f49-051a-4fceb32e6057" testName="FilePathMatcherTest" computerName="DRLAP11001" duration="00:00:00.0081803" startTime="2011-08-17T08:51:10.9503315-04:00" endTime="2011-08-17T08:51:10.9633328-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="93ce90d6-b6a5-4818-8677-f837b93f24df">
+    </UnitTestResult>
+    <UnitTestResult executionId="05bcde79-a2ac-4f8c-81b4-2f300d7b2598" testId="60e71ec1-68c3-50e8-f004-f6769f3b8b15" testName="Config" computerName="DRLAP11001" duration="00:00:00.0017728" startTime="2011-08-17T08:51:10.9703335-04:00" endTime="2011-08-17T08:51:10.9763341-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="05bcde79-a2ac-4f8c-81b4-2f300d7b2598">
+    </UnitTestResult>
+    <UnitTestResult executionId="ebc1b850-8f01-44a1-8ad9-d0c470f49a33" testId="2f8c5f57-2a99-e899-cc72-76f3da566696" testName="TestArgumentParsing2" computerName="DRLAP11001" duration="00:00:00.0008491" startTime="2011-08-17T08:51:10.9793344-04:00" endTime="2011-08-17T08:51:10.9843349-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ebc1b850-8f01-44a1-8ad9-d0c470f49a33">
+    </UnitTestResult>
+    <UnitTestResult executionId="9b9a0b0e-4418-4683-a0db-cbbfb5b8d3d1" testId="7048c88f-e27e-8226-2067-43ff78bfd264" testName="TestArgumentParsing" computerName="DRLAP11001" duration="00:00:00.0003949" startTime="2011-08-17T08:51:10.9883353-04:00" endTime="2011-08-17T08:51:10.9923357-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9b9a0b0e-4418-4683-a0db-cbbfb5b8d3d1">
+    </UnitTestResult>
+    <UnitTestResult executionId="ab5100bd-42ad-4a26-a4c3-959d7410cb8b" testId="bf973ccf-c97a-ddff-03cd-cc92ccc7f41c" testName="TestMultipleDifferentOptions" computerName="DRLAP11001" duration="00:00:00.0046103" startTime="2011-08-17T08:51:10.9983363-04:00" endTime="2011-08-17T08:51:11.0073372-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ab5100bd-42ad-4a26-a4c3-959d7410cb8b">
+    </UnitTestResult>
+  </Results>
+</TestRun>
