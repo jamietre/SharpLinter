@@ -9,37 +9,15 @@ to his extension "JSLint for Visual Studio 2010:"
 
 http://www.scottlogic.co.uk/2010/09/js-lint-in-visual-studio-part-1/
 
-### Code use license.
-
-LICENSE (MIT License)
- 
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
- 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 ## Summary
 
-SharpLinter is a command line tool to automate error-checking Javascript files. It produces output that is formatted for 
-Visual Studio's output window, so clicking on a line will locate the file and line in the IDE.
+SharpLinter is a command line tool to automate error-checking Javascript files. It produces output that is formatted for Visual Studio's output window, so clicking on a line will locate the file and line in the IDE.
+
+The output format is configurable, and is also suitable for any editor or tool that is designed to pass files to a command line tool and handle its output. Configuration instuctions for **Visual Studio 2010**, **Sublime Text 2**, and **Textpad** are provided below.
 
 Each of the linting options can be specified in a configuration file as well (see below).
 
-## Roadmap for Distribution
+## Roadmap 
 
 All these files should be copied into a folder from where it will be invoked.
 
@@ -59,7 +37,7 @@ Yahoo YUI project: <http://yuicompressor.codeplex.com/>
 
 Basic usage: Process all files in the current directory:
 
-    sharplinter -f *.js    
+    sharplinter -f *.js
 
 Detailed usage:
 
@@ -220,6 +198,31 @@ You can also set it up to process all the files in your project. Make another en
 
 for example, to process all files in the "scripts" subfolder of your project, but skip the folder "thirdparty" within "scripts" and don't try to process minimized files.
 
+# Sublime Text 2
+
+SharpLinter can be configured as a build tool for Sublime Text 2.
+
+Select *Tools -> Build System -> New Build System*
+
+Enter the following to create a build config that works against javascript files:
+
+    {
+        "cmd": ["sharplinter", "-v","-ph","best","*.min.js", "$file"],
+        "file_regex": "^(.*?)\\(([0-9]+)\\): ()(.*)$",
+        "selector": "source.js"
+    }
+
+The "cmd" property for Submlime Text 2 should contain the command followed by any options you want, so this could be as simple as
+
+    "cmd": ["sharplinter", "$file"],
+
+to run SharpLinter with default options against the active file.
+
+By default, build is bound to `ctrl+B` in Sublime Text 2. With the build config above, javascript files will be built using sharplinter.
+
+
+
+
 # TextPad
 
 SharpLinter can also be configured as an external tool in the Textpad editor.
@@ -234,8 +237,32 @@ SharpLinter can also be configured as an external tool in the Textpad editor.
 
 5. Enter the following regular expression:
 
-    ^\(.*\)(\([0-9]+\))
+    `^\(.*?\)(\([0-9]+\)):.*?$`
    
 6. Choose "1" for File, and "2" for Line under the regex input.
 
 Now you're done. Set up a keyboard shortcut, and it will process the active file. You can click a line in the output window to jump to it in the editor.
+
+
+### Code use license.
+
+LICENSE (MIT License)
+ 
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+ 
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
