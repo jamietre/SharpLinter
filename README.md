@@ -17,20 +17,24 @@ The output format is configurable, and is also suitable for any editor or tool t
 
 Each of the linting options can be specified in a configuration file as well (see below).
 
-## Roadmap 
+## Installation
 
-All these files should be copied into a folder from where it will be invoked.
+Unzip the files "dist/sharplinter.zip" into a folder that's in your path. Some users may need to deal with msvcp100.dll and msvcr100.dll (see below).
 
-    bin/SharpLinter.exe                     The executable.
-    bin/JTC.SharpLinter.dll                 The class library (if you want to use this from within another app)
-    bin/Noesis.Javascript.dll               Noesis Javascript.NET V8 runtime
-    bin/Yahoo.Yui.Compressor.dll            Yahoo YUI Compressor for .NET
-    bin/EcmaScript.NET.modified.dll         Distributed with Yahoo YUI
+## Distribution Details 
 
-These are needed by the Noesis Javascript V8 wrapper:
+If you compile it youself, all these files should be copied into the SharpLinterExe/bin folder.
+
+    SharpLinter.exe                     The executable.
+    JTC.SharpLinter.dll                 The class library (if you want to use this from within another app)
+    Noesis.Javascript.dll               Noesis Javascript.NET V8 runtime
+    Yahoo.Yui.Compressor.dll            Yahoo YUI Compressor for .NET
+    EcmaScript.NET.modified.dll         Distributed with Yahoo YUI
+
+These are the MS VC++ runtimes and are needed by the Noesis Javascript V8 wrapper. You probably already have these.
     
-    bin/msvcp100.dll                        MS VC++ runtimes. You probably do not need these, but if you have problems 
-    bin/msvcr100.dll                           try copying them to the Windows system folder.                       
+    msvcp100.dll                         
+    msvcr100.dll                       
     
 Noesis project: <http://javascriptdotnet.codeplex.com/>
 Yahoo YUI project: <http://yuicompressor.codeplex.com/>

@@ -25,7 +25,7 @@ namespace JTC.SharpLinter.Config
             List<string> matches = new List<string>();
             Regex nameRegex=null;
             bool match=false;
-            bool noPatterns = true;
+//            bool noPatterns = true;
             
             foreach (string path in names)
             {
@@ -33,7 +33,7 @@ namespace JTC.SharpLinter.Config
                 string fileNameOnly = FileNamePart(path);
                 foreach (string pattern in patterns)
                 {
-                    noPatterns = false;
+                    //noPatterns = false;
                     string cleanPattern = pattern.Replace("/", "\\");
                     string namePattern = FileNamePart(cleanPattern);
                     string pathPattern = PathPart(cleanPattern);
