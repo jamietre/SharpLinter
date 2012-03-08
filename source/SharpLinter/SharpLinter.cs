@@ -136,7 +136,7 @@ namespace JTC.SharpLinter
                 JsLintResult result = new JsLintResult();
                 result.Errors = new List<JsLintData>();
                 if (!hasSkips) {
-                    for (int i = 0; i < Configuration.MaxErrors; i++)
+                    for (int i = 0; i < Math.Min(Configuration.MaxErrors, dataCollector.Errors.Count); i++)
                     {
                         result.Errors.Add(dataCollector.Errors[i]);
                     }
