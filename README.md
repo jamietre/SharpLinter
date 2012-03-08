@@ -1,8 +1,8 @@
-SHARPLINTER 1.0
+SHARPLINTER 1.0.1
 
 https://github.com/jamietre/SharpLinter
 
-(c) 2011 James Treworgy
+(c) 2012 James Treworgy
 
 This is based on code written by Luke Page that was the predecessor
 to his extension "JSLint for Visual Studio 2010:"
@@ -246,6 +246,13 @@ SharpLinter can also be configured as an external tool in the Textpad editor.
 6. Choose "1" for File, and "2" for Line under the regex input.
 
 Now you're done. Set up a keyboard shortcut, and it will process the active file. You can click a line in the output window to jump to it in the editor.
+
+
+### Changes
+
+
+    1.0.1   2012-03-08   Bugfix: ignored areas were counting against "maxerr" limit
+    1.0		2011-08-18   Initial Release
 
 
 ### Code use license.

@@ -98,7 +98,6 @@ namespace JTC.SharpLinter
                                 }
                                 else
                                 {
-                                    
                                     skipping = false;
                                 }
                             }
@@ -135,11 +134,16 @@ namespace JTC.SharpLinter
                 _context.Run("lintRunner(dataCollector, javascript, options);");
 
                 JsLintResult result = new JsLintResult();
+                result.Errors = new List<JsLintData>();
                 if (!hasSkips) {
-                    result.Errors = dataCollector.Errors;
+                    for (int i = 0; i < Configuration.MaxErrors; i++)
+                    {
+                        result.Errors.Add(dataCollector.Errors[i]);
+                    }
                 } else {
-                    result.Errors = new List<JsLintData>();
+                    
                     foreach (var error in dataCollector.Errors) {
+
                         if (error.Line >= 0 && error.Line < LineExclusion.Count)
                         {
                             if (!LineExclusion[error.Line - 1])
@@ -150,6 +154,10 @@ namespace JTC.SharpLinter
                         else
                         {
                             result.Errors.Add(error);
+                        }
+                        if (result.Errors.Count == Configuration.MaxErrors)
+                        {
+                            break;
                         }
                     }
                 }

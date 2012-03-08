@@ -30,6 +30,7 @@ namespace JTC.SharpLinter.Config
                     JsLintCode= sr.ReadToEnd();
                 }
             }
+            SetOption("maxerr", 99999);
 
 		}
         /// <summary>
@@ -308,9 +309,7 @@ namespace JTC.SharpLinter.Config
         {
             get
             {
-                int errs = GetOption<int>("maxerr");
-                return errs == 0 ? 100 : errs;
-
+                return GetOption<int>("maxerr");
             }
         }
         public bool ErrorOnUnused
@@ -720,10 +719,14 @@ namespace JTC.SharpLinter.Config
             foreach (var kvp in Options)
             {
                 object value = kvp.Value;
-                if (kvp.Key == "predef")
+                switch(kvp.Key)
                 {
-                   // value = ((string)kvp.Value).Trim().Replace(" ", ",");
-                    value = ((string)kvp.Value).Split(' ');
+                    case "predef":
+                        value = ((string)kvp.Value).Split(' ');
+                        break;
+                    case "maxerr":
+                        value = 99999;
+                        break;
                 }
                 returner[kvp.Key] = value;
 			}			
