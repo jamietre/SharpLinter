@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
-using Noesis.Javascript;
 using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using Noesis.Javascript;
 using JTC.SharpLinter.Config;
 
 
@@ -65,10 +66,39 @@ namespace JTC.SharpLinter
                 };".Replace("JSLINT", func);
             _context.Run(run);
         }
+        /// <summary>
+        /// Returns true if a script appears on this line. 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        protected bool isStartScript(string text)
+        {
+            string expr =  @"<script (.|\n)*?type\s*=\s*[""|']text/javascript[""|'](.|\n)*?>";
+            string ignore = @"<script (.|\n)*?src\s*=\s*[""|'].*?[""|'](.|\n)*?>";
 
+            var mustMatch= new Regex(expr);
+            var mustNotMatch = new Regex(ignore);
+            bool result = false;
+            var matches = mustMatch.Matches(text);
+            if (matches.Count>0)
+            {
+                // just check the last one, if for some reason there's a block
+                // opened & closed and followed by an include all on one line, then
+                // just don't deal with it.
+                result = !mustNotMatch.IsMatch(matches[matches.Count-1].Value);
+            }
+            return result;
+        }
+        protected bool isEndScript(string text)
+        {
+            string expr = @"</script.*?>";
+            var regex = new Regex(expr);
+            return regex.IsMatch(text);
+        }
         public JsLintResult Lint(string javascript)
         {
-			
+            StringBuilder finalJs = new StringBuilder();
+
             lock (_lock)
             {
                 bool hasSkips = false;
@@ -77,7 +107,12 @@ namespace JTC.SharpLinter
                 if (!String.IsNullOrEmpty(Configuration.IgnoreStart) && !String.IsNullOrEmpty(Configuration.IgnoreEnd))
                 {
                     LineExclusion = new List<bool>();
+                    // lines are evaluated, but errors are ignored
                     bool skipping=false;
+                    
+                    // lines are not evaluted by the parser
+                    bool ignoring = Configuration.InputType == InputType.Html;
+                    
                     int startSkipLine = 0;
 
                     using (StringReader reader = new StringReader(javascript))
@@ -88,6 +123,12 @@ namespace JTC.SharpLinter
                         while ((text = reader.ReadLine()) != null)
                         {
                             line++;
+
+                            if (!ignoring && Configuration.InputType == InputType.Html && isEndScript(text))
+                            {
+                                ignoring = true;
+                            }
+
                             if (text.IndexOf("/*" + (skipping ? Configuration.IgnoreEnd : Configuration.IgnoreStart) + "*/") >= 0)
                             {
                                 if (!skipping)
@@ -102,6 +143,14 @@ namespace JTC.SharpLinter
                                 }
                             }
                             LineExclusion.Add(skipping);
+
+                            finalJs.AppendLine(ignoring ? "" : text);
+
+                            if (ignoring && Configuration.InputType == InputType.Html && isStartScript(text))
+                            {
+                                ignoring = false;
+                            }
+                            
                         }
                     }
                     if (skipping)
@@ -116,33 +165,41 @@ namespace JTC.SharpLinter
                         hasSkips = false;
                     }
                 }
-                if (string.IsNullOrEmpty(javascript))
-			    {
+
+                if (finalJs.Length == 0)
+                {
                     JsLintData err = new JsLintData();
-                    err.Line=0;
-                    err.Character=0;
-                    err.Reason="The file was empty.";
+                    err.Line = 0;
+                    err.Character = 0;
+                    err.Reason = "The file was empty.";
                     dataCollector.Errors.Add(err);
-			    }
-                // Setting the externals parameters of the context
-				_context.SetParameter("dataCollector", dataCollector);
-                _context.SetParameter("javascript", javascript);
-				_context.SetParameter("options", Configuration.ToJsOptionVar());
+                }
+                else
+                {
+                    // Setting the externals parameters of the context
+                    _context.SetParameter("dataCollector", dataCollector);
+                    _context.SetParameter("javascript", finalJs.ToString());
+                    _context.SetParameter("options", Configuration.ToJsOptionVar());
 
 
-                // Running the script
-                _context.Run("lintRunner(dataCollector, javascript, options);");
+                    // Running the script
+                    _context.Run("lintRunner(dataCollector, javascript, options);");
+                }
 
                 JsLintResult result = new JsLintResult();
                 result.Errors = new List<JsLintData>();
-                if (!hasSkips) {
+                if (!hasSkips)
+                {
                     for (int i = 0; i < Math.Min(Configuration.MaxErrors, dataCollector.Errors.Count); i++)
                     {
                         result.Errors.Add(dataCollector.Errors[i]);
                     }
-                } else {
-                    
-                    foreach (var error in dataCollector.Errors) {
+                }
+                else
+                {
+
+                    foreach (var error in dataCollector.Errors)
+                    {
 
                         if (error.Line >= 0 && error.Line < LineExclusion.Count)
                         {
@@ -161,9 +218,10 @@ namespace JTC.SharpLinter
                         }
                     }
                 }
-
                 return result;
             }
+            
+            
         }
 
 		private class LintDataCollector

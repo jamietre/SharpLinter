@@ -84,7 +84,12 @@ namespace JTC.SharpLinter.Config
                 {
                     continue;
                 }
-                
+
+                var ext = Path.GetExtension(file).ToLower();
+                Configuration.InputType = (ext == ".js" || ext == ".javascript") ?
+                    InputType.JavaScript :
+                    InputType.Html;
+
                 JsLintResult result = lint.Lint(javascript);
                 bool hasErrors = result.Errors.Count > 0;
 
@@ -129,7 +134,7 @@ namespace JTC.SharpLinter.Config
                 {
                     successLine = String.Format("{0}: No errors found.", file);
 
-                    if (Configuration.MinimizeOnSuccess)
+                    if (Configuration.MinimizeOnSuccess && Configuration.InputType==InputType.JavaScript)
                     {
                         compressor.Clear();
                         compressor.Input = javascript;

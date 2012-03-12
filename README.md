@@ -250,7 +250,7 @@ Now you're done. Set up a keyboard shortcut, and it will process the active file
 
 ### Changes
 
-
+    1.0.2   2012-03-12   Works with inline script in HTML files
     1.0.1   2012-03-08   Bugfix: ignored areas were counting against "maxerr" limit
     1.0		2011-08-18   Initial Release
 

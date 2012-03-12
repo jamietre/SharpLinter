@@ -12,6 +12,11 @@ namespace JTC.SharpLinter.Config
         JSLint=1,
         JSHint=2
     }
+    public enum InputType
+    {
+        JavaScript=1,
+        Html=2
+    }
 	/// <summary>
 	///  Represents configuring the Js Lint(er)
 	/// </summary>
@@ -31,6 +36,7 @@ namespace JTC.SharpLinter.Config
                 }
             }
             SetOption("maxerr", 99999);
+            InputType = InputType.JavaScript;
 
 		}
         /// <summary>
@@ -41,6 +47,7 @@ namespace JTC.SharpLinter.Config
             get;
             set;
         }
+        public InputType InputType { get; set; }
         /// <summary>
         /// The javascript code that will be used to parse the input file. 
         /// </summary>
