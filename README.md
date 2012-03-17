@@ -11,7 +11,7 @@ http://www.scottlogic.co.uk/2010/09/js-lint-in-visual-studio-part-1/
 
 ## Summary
 
-SharpLinter is a command line tool to automate error-checking Javascript files with JSLint or JSHint. It produces output that is formatted for Visual Studio's output window, so clicking on a line will locate the file and line in the IDE.
+SharpLinter is a command line tool to automate error-checking Javascript files (or HTML files with embedded Javascript) using JSLint or JSHint. It produces output that is formatted for Visual Studio's output window, so clicking on a line will locate the file and line in the IDE.
 
 The output format is configurable, and is also suitable for any editor or tool that is designed to pass files to a command line tool and handle its output. Configuration instuctions for **Visual Studio 2010**, **Sublime Text 2**, and **Textpad** are provided below.
 
