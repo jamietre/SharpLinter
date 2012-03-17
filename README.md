@@ -2,6 +2,10 @@ SHARPLINTER 1.0.2
 
 https://github.com/jamietre/SharpLinter
 
+Until I make a real web site, home page:
+
+http://blog.outsharked.com/2011/08/sharplinter-command-line-tool-for.html
+
 (c) 2012 James Treworgy
 
 This is based on code written by Luke Page that was the predecessor
