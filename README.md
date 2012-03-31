@@ -215,7 +215,7 @@ Select *Tools -> Build System -> New Build System*
 Enter the following to create a build config that works against javascript files:
 
     {
-        "cmd": ["sharplinter", "-v","-ph","best","*.min.js", "$file"],
+        "cmd": ["sharplinter","-ph","best","*.min.js", "$file"],
         "file_regex": "^(.*?)\\(([0-9]+)\\): ()(.*)$",
         "selector": "source.js"
     }
