@@ -51,7 +51,7 @@ Process a single file
 
     sharplinter file.js
 
-Process and minify upon success all files matching "*.js" to "*.min.js"
+Process and minify upon success all files matching "*.js" to "*.min.js" using best compression method
 
     sharplinter -ph best *.min.js *.js
 
