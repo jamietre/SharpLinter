@@ -11,5 +11,6 @@ namespace JTC.SharpLinter
     public class JsLintResult
     {
         public List<JsLintData> Errors { get; set; }
+        public bool Limited { get; set; }
     }
 }

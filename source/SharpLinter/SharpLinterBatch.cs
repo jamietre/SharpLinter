@@ -48,10 +48,11 @@ namespace JTC.SharpLinter.Config
             SharpLinter lint = new SharpLinter(Configuration);
             List<string> SummaryInfo = new List<string>();
             
-            if (Configuration.Verbose)
+            if (Configuration.Verbosity == Verbosity.Debugging)
             {
                 Console.WriteLine(String.Format("SharpLinter: Beginning processing at {0:MM/dd/yy H:mm:ss zzz}", DateTime.Now));
-                Console.WriteLine(String.Format("Global configuration file: {0}",StringOrMissingDescription(Configuration.GlobalConfigFile)));
+                Console.WriteLine(String.Format("Global configuration file: {0}",StringOrMissingDescription(Configuration.GlobalConfigFilePath)));
+                Console.WriteLine(String.Format("JSLINT path: {0}", StringOrMissingDescription(Configuration.JsLintFilePath)));
                 Console.WriteLine(String.Format("Using linter options for {0}, {1}",Configuration.LinterType.ToString(),StringOrMissingDescription(Configuration.JsLintVersion)));
                 Console.WriteLine("LINT options: " + StringOrMissingDescription(Configuration.OptionsToString()));
                 Console.WriteLine("LINT globals: " + StringOrMissingDescription(Configuration.GlobalsToString()));
@@ -101,8 +102,13 @@ namespace JTC.SharpLinter.Config
                         error.FilePath = file;
                         fileErrors.Add(error);
                     }
-                    
-                    SummaryInfo.Add(String.Format("{0}: Lint found {1} errors.", file, result.Errors.Count));
+                    string leadIn = String.Format("{0}: Lint found {1} errors.", file, result.Errors.Count);
+                   
+                   
+                    if (result.Limited) {
+                        leadIn += String.Format(" Stopped processing due to maxerr={0} option.", Configuration.MaxErrors);
+                    }
+                    SummaryInfo.Add(leadIn);
                 }
                 
 
@@ -180,7 +186,7 @@ namespace JTC.SharpLinter.Config
                 fileErrors.Sort(LintDataComparer);
                 allErrors.AddRange(fileErrors);                
             }
-            if (Configuration.Verbose)
+            if (Configuration.Verbosity == Verbosity.Debugging || Configuration.Verbosity == Verbosity.Summary)
             {
                 // Output file-by-file results at beginning
                 foreach (string item in SummaryInfo)
@@ -192,11 +198,11 @@ namespace JTC.SharpLinter.Config
 
             if (allErrors.Count > 0)
             {
-                if (Configuration.Verbose) {
-                Console.WriteLine();
-                Console.WriteLine("Error Details:");
-                Console.WriteLine();
-                    }
+                if (Configuration.Verbosity == Verbosity.Debugging) {
+                    Console.WriteLine();
+                    Console.WriteLine("Error Details:");
+                    Console.WriteLine();
+                }
 
                 foreach (JsLintData error in allErrors)
                 {
@@ -204,18 +210,18 @@ namespace JTC.SharpLinter.Config
                     Console.WriteLine(string.Format(OutputFormat, error.FilePath, error.Line, error.Source, error.Reason,character));
                 }
             }
-            if (Configuration.Verbose)
+            if (Configuration.Verbosity == Verbosity.Debugging)
             {
                 Console.WriteLine();
                 Console.WriteLine("SharpLinter: Finished processing at {0:MM/dd/yy H:mm:ss zzz}. Processed {1} files.", DateTime.Now, fileCount);
             }
-            else
-            {
-                if (allErrors.Count == 0)
-                {
-                    Console.WriteLine("SharpLinter: Finished processing {0} file(s) at {1:MM/dd/yy H:mm:ss zzz}, no errors found.", fileCount, DateTime.Now);
-                }
-            }
+            //else
+            //{
+            //    if (allErrors.Count == 0)
+            //    {
+            //        Console.WriteLine("SharpLinter: Finished processing {0} file(s) at {1:MM/dd/yy H:mm:ss zzz}, no errors found.", fileCount, DateTime.Now);
+            //    }
+            //}
         }
         private string MapFileName(string path, string mask)
         {

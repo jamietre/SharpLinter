@@ -9,7 +9,7 @@
     <ProjectGuid>{6562EDA8-207F-408C-AC33-97A69C1FBF2A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>JTC.SharpLinter</RootNamespace>
+    <RootNamespace>JTC.SharpLinter.Test</RootNamespace>
     <AssemblyName>JTC.SharpLinter.Test</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -45,9 +45,10 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConfigurationTests.cs" />
-    <Compile Include="UtilityUnitTests.cs" />
-    <Compile Include="LinterUnitTests.cs" />
+    <Compile Include="Config\ConfigurationTests.cs" />
+    <Compile Include="Library\SharpLinter.cs" />
+    <Compile Include="TestResources.cs" />
+    <Compile Include="Utility\UtilityUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -57,7 +58,21 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="jslint.test.conf" />
+    <None Include="resources\jslint.test.conf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="resources\errors.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\errors.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\noerrors.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\noerrors.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

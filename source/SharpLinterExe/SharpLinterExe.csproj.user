@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>-v -c D:\applications\jslint\sharplinter.conf -j D:\applications\JSLint\jslint.js -f "D:\VSProjects\jquery\iqtest\iqtest-runner.html" -k -v -ph best *.min.js  -o "unused=true"</StartArguments>
+    <StartArguments>-v2 -f "c:\vsprojects\jquery\iqtest\iqtest-runner.html" -k -ph best *.min.js  -o "unused=true,maxerr:10"</StartArguments>
+    <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <StartArguments>-j "d:\applications\jslint\jslint.js" -f "d:\applications\jslint\*.js" -f "d:\vsprojects\dotnet4\ssllightingfacts\ssllightingfacts\scripts\lf\lightingfacts.1.2.js" -k -v -ph packer *.min.js -o "laxbreak: true, evil: true, unused: true" -x *.min.js</StartArguments>

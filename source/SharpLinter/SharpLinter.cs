@@ -18,31 +18,19 @@ namespace JTC.SharpLinter
 	/// </summary>
     public class SharpLinter
     {
-        private IJSEngineWrapper _context;
-        private object _lock = new Object();
-      
-        /// <summary>
-        /// Map of lines that should be excluded (true for an index means exclude that line)
-        /// </summary>
-        protected List<bool> LineExclusion;
+        #region constructor
 
-        /// <summary>
-        /// The script that gets run
-        /// </summary>
-        protected string JSLint;
-
-        protected JsLintConfiguration Configuration;
         public SharpLinter(JsLintConfiguration config)
         {
             Configuration = config;
             Initialize();
         }
-        
-        protected void Initialize() 
+
+        protected void Initialize()
         {
             _context = new Engines.Neosis();
             //_context = new JavascriptContext();
-			
+
             if (String.IsNullOrEmpty(Configuration.JsLintCode))
             {
                 throw new Exception("No JSLINT/JSHINT code was specified in the configuration.");
@@ -66,6 +54,27 @@ namespace JTC.SharpLinter
                 };".Replace("JSLINT", func);
             _context.Run(run);
         }
+
+        #endregion
+
+        #region private methods
+
+        private IJSEngineWrapper _context;
+        private object _lock = new Object();
+      
+        /// <summary>
+        /// Map of lines that should be excluded (true for an index means exclude that line)
+        /// </summary>
+        protected List<bool> LineExclusion;
+
+        /// <summary>
+        /// The script that gets run
+        /// </summary>
+        protected string JSLint;
+
+        protected JsLintConfiguration Configuration;
+       
+        
         /// <summary>
         /// Returns true if a script appears on this line. 
         /// </summary>
@@ -95,76 +104,88 @@ namespace JTC.SharpLinter
             var regex = new Regex(expr);
             return regex.IsMatch(text);
         }
+
+        #endregion
+
         public JsLintResult Lint(string javascript)
         {
             StringBuilder finalJs = new StringBuilder();
+            if (String.IsNullOrEmpty(Configuration.IgnoreEnd) ||
+            String.IsNullOrEmpty(Configuration.IgnoreStart) ||
+                String.IsNullOrEmpty(Configuration.IgnoreFile)) {
+                    throw new Exception("The configuration requres values for IgnoreStart, IgnoreEnd, and IgnoreFile.");
+            }
 
             lock (_lock)
             {
                 bool hasSkips = false;
 				LintDataCollector dataCollector = new LintDataCollector(Configuration.GetOption<bool>("unused"));
 
-                if (!String.IsNullOrEmpty(Configuration.IgnoreStart) && !String.IsNullOrEmpty(Configuration.IgnoreEnd))
+                LineExclusion = new List<bool>();
+                // lines are evaluated, but errors are ignored: we want to use this for blocks excluded 
+                // within a javascript file, because otherwise the parser will freak out if other parts of the
+                // code wouldn't validate if that block were missing
+                bool ignoreErrors=false;
+                    
+                // lines are not evaluted by the parser at all - in HTML files we want to pretend non-JS lines
+                // are not even there.
+                bool ignoreLines = Configuration.InputType == InputType.Html;
+                    
+                int startSkipLine = 0;
+
+                using (StringReader reader = new StringReader(javascript))
                 {
-                    LineExclusion = new List<bool>();
-                    // lines are evaluated, but errors are ignored
-                    bool skipping=false;
-                    
-                    // lines are not evaluted by the parser
-                    bool ignoring = Configuration.InputType == InputType.Html;
-                    
-                    int startSkipLine = 0;
+                    string text;
+                    int line = 0;
 
-                    using (StringReader reader = new StringReader(javascript))
+                    while ((text = reader.ReadLine()) != null)
                     {
-                        string text;
-                        int line = 0;
+                        line++;
 
-                        while ((text = reader.ReadLine()) != null)
+                        if (!ignoreLines 
+                            && Configuration.InputType == InputType.Html && isEndScript(text))
                         {
-                            line++;
-
-                            if (!ignoring && Configuration.InputType == InputType.Html && isEndScript(text))
-                            {
-                                ignoring = true;
-                            }
-
-                            if (text.IndexOf("/*" + (skipping ? Configuration.IgnoreEnd : Configuration.IgnoreStart) + "*/") >= 0)
-                            {
-                                if (!skipping)
-                                {
-                                    startSkipLine = line;
-                                    skipping = true;
-                                    hasSkips = true;
-                                }
-                                else
-                                {
-                                    skipping = false;
-                                }
-                            }
-                            LineExclusion.Add(skipping);
-
-                            finalJs.AppendLine(ignoring ? "" : text);
-
-                            if (ignoring && Configuration.InputType == InputType.Html && isStartScript(text))
-                            {
-                                ignoring = false;
-                            }
-                            
+                            ignoreLines = true;
                         }
-                    }
-                    if (skipping)
-                    {
-                        // there was no ignore-end found, so cancel the results 
-                        JsLintData err = new JsLintData();
-                        err.Line = startSkipLine;
-                        err.Character = 0;
-                        err.Reason = "An ignore start marker was found, but there was no ignore-end. Nothing was ignored.";
-                        dataCollector.Errors.Add(err);
 
-                        hasSkips = false;
+                        if (text.IndexOf("/*" + (ignoreErrors ? 
+                            Configuration.IgnoreEnd : 
+                            Configuration.IgnoreStart) + "*/") >= 0)
+                        {
+                            if (!ignoreErrors)
+                            {
+                                startSkipLine = line;
+                                ignoreErrors = true;
+                                hasSkips = true;
+                            }
+                            else
+                            {
+                                ignoreErrors = false;
+                            }
+                        }
+                        LineExclusion.Add(ignoreErrors);
+
+                        finalJs.AppendLine(ignoreLines ? "" : text);
+
+                        if (ignoreLines && Configuration.InputType == InputType.Html && isStartScript(text))
+                        {
+                            ignoreLines = false;
+                        }
+                            
                     }
                 }
+                if (ignoreErrors)
+                {
+                    // there was no ignore-end found, so cancel the results 
+                    JsLintData err = new JsLintData();
+                    err.Line = startSkipLine;
+                    err.Character = 0;
+                    err.Reason = "An ignore start marker was found, but there was no ignore-end. Nothing was ignored.";
+                    dataCollector.Errors.Add(err);
+
+                    hasSkips = false;
+                }
+                
 
                 if (finalJs.Length == 0)
                 {
@@ -188,19 +209,18 @@ namespace JTC.SharpLinter
 
                 JsLintResult result = new JsLintResult();
                 result.Errors = new List<JsLintData>();
-                if (!hasSkips)
+
+                int index = 0;
+                while (result.Errors.Count <= Configuration.MaxErrors 
+                    && index<dataCollector.Errors.Count)
                 {
-                    for (int i = 0; i < Math.Min(Configuration.MaxErrors, dataCollector.Errors.Count); i++)
+                    var error = dataCollector.Errors[index++];
+                    if (!hasSkips)
                     {
-                        result.Errors.Add(dataCollector.Errors[i]);
+                        result.Errors.Add(error);
                     }
-                }
-                else
-                {
-
-                    foreach (var error in dataCollector.Errors)
+                    else
                     {
-
                         if (error.Line >= 0 && error.Line < LineExclusion.Count)
                         {
                             if (!LineExclusion[error.Line - 1])
@@ -212,124 +232,21 @@ namespace JTC.SharpLinter
                         {
                             result.Errors.Add(error);
                         }
-                        if (result.Errors.Count == Configuration.MaxErrors)
-                        {
-                            break;
-                        }
                     }
                 }
+                // if we went over, mark that there were more errors and remove last one
+                if (result.Errors.Count > Configuration.MaxErrors)
+                {
+                    result.Errors.RemoveAt(result.Errors.Count - 1);
+                    result.Limited = true;
+                }
+                
                 return result;
             }
             
             
         }
 
-		private class LintDataCollector
-		{
-			private List<JsLintData> _errors = new List<JsLintData>();
-			private bool _processUnuseds = false;
-
-			public List<JsLintData> Errors
-			{
-				get { return _errors; }
-			}
-
-			public LintDataCollector(bool processUnuseds)
-			{
-				_processUnuseds = processUnuseds;
-			}
-            public object predef { get; set; }
-
-			public void ProcessData(object data)
-			{
-				Dictionary<string, object> dataDict = data as Dictionary<string, object>;
-
-				if (dataDict != null)
-				{
-
-					if (dataDict.ContainsKey("errors"))
-					{
-						ProcessListOfObject(dataDict["errors"], (error) =>
-						{
-							JsLintData jsError = new JsLintData();
-                            jsError.Source = "lint";
-							if (error.ContainsKey("line"))
-							{
-								jsError.Line = (int)error["line"];
-							}
-
-							if (error.ContainsKey("character"))
-							{
-								jsError.Character = (int)error["character"];
-							}
-
-							if (error.ContainsKey("reason"))
-							{
-								jsError.Reason = (string)error["reason"];
-							}
-
-							_errors.Add(jsError);
-						});
-					}
-
-					if (_processUnuseds && dataDict.ContainsKey("unused"))
-					{
-                        int lastLine = -1;
-                        JsLintData jsError=null;
-                        string unusedList = String.Empty;
-                        int unusedCount = 0;
-						ProcessListOfObject(dataDict["unused"], (unused) =>
-						{
-
-                            int line = 0;
-							if (unused.ContainsKey("line"))
-							{
-								line = (int)unused["line"];
-							}
-                            if (line!=lastLine) {
-                                if (jsError != null) {
-                                    jsError.Reason = "Unused Variable" + (unusedCount > 1 ? "s " : " ") + unusedList;
-                                    _errors.Add(jsError);
-                                    
-                                }
-                                jsError = new JsLintData();
-                                jsError.Source = "lint";
-                                jsError.Character = -1;
-                                jsError.Line = line;
-                                unusedCount = 0;
-                                unusedList = String.Empty;
-                            }
-                            
-							if (unused.ContainsKey("name"))
-							{
-                               unusedList += (unusedCount==0 ? String.Empty : ", ") + unused["name"];
-                               unusedCount++;
-							}
-                            lastLine = line;
-						});
-                        jsError.Reason = "Unused Variable" + (unusedCount > 1 ? "s " : " ") + unusedList;
-                        _errors.Add(jsError);
-					}
-				}
-			}
-
-			private void ProcessListOfObject(object obj, Action<Dictionary<string, object>> processor)
-			{
-				object[] array = obj as object[];
-
-				if (array != null)
-				{
-					foreach (object objItem in array)
-					{
-						Dictionary<string, object> objItemDictionary = objItem as Dictionary<string, object>;
-
-						if (objItemDictionary != null)
-						{
-							processor(objItemDictionary);
-						}
-					}
-				}
-			}
-		}
+	
     }
 }

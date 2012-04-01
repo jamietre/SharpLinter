@@ -1,4 +1,4 @@
-SHARPLINTER 1.0.2
+SHARPLINTER 1.1
 
 https://github.com/jamietre/SharpLinter
 
@@ -45,16 +45,24 @@ Yahoo YUI project: <http://yuicompressor.codeplex.com/>
 
 Basic usage: Process all files in the current directory:
 
-    sharplinter -f *.js
+    sharplinter *.js
+
+Process a single file
+
+    sharplinter file.js
+
+Process and minify upon success all files matching "*.js" to "*.min.js"
+
+    sharplinter -ph best *.min.js *.js
 
 Detailed usage:
 
-    
-    sharplinter [-o options] [-v]
+    sharplinter [-o options] 
+			[-v[1|2|3]] [--noglobal]
             [-c sharplinter.conf] [-j jslint.js] [-y]
-            [-p[h] yui|packer|best mask] [-k]
+            [-p[h] yui|packer|best {mask}] [-k]
             [-i ignore-start ignore-end] [-if text] [-of "format"]
-            [-[r]f /path/*.js] [filemame1 filename2 ...] 
+            [-[r]f /path/*.js] [{filemame1 filename2}] 
 
     Options:
 
@@ -62,12 +70,14 @@ Detailed usage:
     -[r]f c:\scripts\*.js     parse all files matching "*.js" in "c:\scripts"
                               if called with "r", will recurse subfolders
                               The "f" is optional, any parameters passed 
-                              without an option will be treated as files.
+                              without an option will be treated a file.
                               
-    -o "option option ..."    set jslint/jshint options specified, separated by
-                              spaces, in format "option" or "option: true|false"
+    -o "option, option ..."    set jslint/jshint options specified, separated by
+                              commas, in format "option" or "option: true|false"
                               
-    -v                        be verbose (report information other than errors)
+    -v1 or -v2 or -v3         be (terse) or (verbose) or (extremely verbose with debug info)
+
+    --noglobal                ignore global options file
 
     -k                        Wait for a keytroke when done
     
@@ -77,8 +87,8 @@ Detailed usage:
     
     -j jslint.js              use file specified to parse files instead of embedded
                               (probably old) script. if omitted, will attempt first to
-                              read the file 'jslint.js' from the application director,
-                              and will fall back on the embedded file.
+                              read the file 'jslint.js' from the application directory,
+                              and will fall back on the embedded version.
                               
     -y                        Also run the script through YUI compressor to look for
                               errors
@@ -230,7 +240,6 @@ By default, build is bound to `ctrl+B` in Sublime Text 2. With the build config 
 
 
 
-
 # TextPad
 
 SharpLinter can also be configured as an external tool in the Textpad editor.
@@ -253,8 +262,13 @@ Now you're done. Set up a keyboard shortcut, and it will process the active file
 
 
 ### Changes
+	1.1		2012-04-01	 
+			Add more verbosity options. Add --noglobal option.
+    		Bugfix for "maxerr" and HTML files
+			Improve error handling and fallback handling for missing config/lint files
+			Work with no config file specified
 
-    1.0.2   2012-03-12   Works with inline script in HTML files
+	1.0.2   2012-03-12   Works with inline script in HTML files
     1.0.1   2012-03-08   Bugfix: ignored areas were counting against "maxerr" limit
     1.0		2011-08-18   Initial Release
 

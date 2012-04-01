@@ -1,0 +1,172 @@
+
+<html>
+
+<head>
+	<title>IQTest Javascript Testing Framework Test Runner</title>
+	<script type="text/javascript" src="redist/jquery-1.7.1.js" /></script>
+	<script type="text/javascript" src="redist/when.js" /></script>
+	<script type="text/javascript" src="redist/timeout.js" /></script>
+	<script type="text/javascript" src="redist/buster-core.js" /></script>
+	<script type="text/javascript" src="redist/buster-eventEmitter.js" /></script>
+	<script type="text/javascript" src="redist/buster-assertions.js" /></script>
+	<script type="text/javascript" src="redist/common.utils.js" /></script>
+
+	<script type="text/javascript" src="iqtest.js" /></script>
+	<script type="text/javascript" src="iqtest.assertions.js" /></script>
+
+	<script type="text/javascript" src="iqtest-browser-harness.js" /></script>
+</head>
+
+<body>
+<script type="text/javascript">
+	/*jslint onevar: false */
+	/*global when, iqtest */
+
+	var glob;
+
+	// returns a promise
+	var wait = function(secs) {
+	    var defer = when.defer();
+	    glob=10;
+	    window.setTimeout(function() {
+	        defer.resolve(secs);
+	    },secs*1000);
+	    return defer;
+	};
+	var waitcb = function(secs,cb) {
+		 window.setTimeout(function() {
+	        cb(secs);
+	    },secs*1000);
+	};
+	$(document).ready(function(){
+		var group = iqtest.writer($('#wrap'));
+
+		$('#startTest').bind('click',function(e) {
+			group.run();
+		});
+
+		group.configure({
+				name: "Sample IQ Test Group",
+				timeoutSeconds: 5,
+				showPassed: true
+
+			});
+			group.test("Small Test (#1), about 4 total",function(a,r) {
+
+				a.equals(1,1,"a test");
+				a.resolves(wait(15),"resolves");
+				this.assert(true);
+				r.truthy(true,"False isn't true!!")
+				.then(function() {
+						a.equals(1,1,"In my then1");
+
+
+				});
+				a.truthy(waitcb(3,a.callback()),"Waited 3 secs");
+				this.assert(wait(2),"Just waiting to resolve");
+			
+				a.equals(1,1,"refute 1=1");
+				// test failures
+				// a.contentsEqual(true,[1,2],"Simple arrays are the same");
+				// a.contentsEqual([1,2,3],[1,2],"Simple arrays are the same");
+				 a.contentsEqual([1,2,3,4],[1,2,3,4],"Simple arrays are the same");
+				//a.contentsEqual({prop1: "prop1value", prop2: "prop2value"},{prop1: "prop1value", prop2: "prop2value-diff"},"Simple arrays are the same");
+			
+			})
+
+			;
+
+			group.test("Large Test (#2), about 13",function(a,r) {
+
+				glob=0;
+				a.equals(0,glob,"global value is 0")
+					.truthy(true,"should pass")
+					.then(function() {
+						a.equals(3,3,"Numbers are equal (#1)");
+					});
+
+				// uncomment to test testing error
+				// throw("Test error")
+				var y=false;
+
+				// uncomment to test timeout error
+				//a.resolves(wait(12),"Just waiting to resolve")
+				this.assert(wait(2),"Just waiting to resolve")
+					.equals(2,wait(2),"Waited 2 secs and returned the parameter");
+
+				a.truthy(waitcb(3,a.callback()),"Waited 3 secs");
+
+				var cb = a.callback(function() {
+					// uncomment to test testing error
+					//throw("callback err");
+					return 123;
+				});
+				a.equals(123,waitcb(3,cb),"Hoping to get 123");
+
+				var backprom = a.backpromise(function(cb) {
+					// uncomment to test testing error
+					//throw("backpromise function error");
+					$('#sample').hide('slow',cb);
+				}, function(response) {
+					// uncomment to test testing error
+					//throw("backpromise callback error");
+					return "xxx";
+				});
+
+				a.equals('xxx',backprom,"Hoping to get 'xxx'")
+
+				.then(function() {
+					a.isFalse(y,"y is false");
+					a.equals(10,glob,"global got set by wait");
+					y=true;
+				})
+				.equals(2,2,"Checking order")
+				.then(function()
+				{
+					a.equals(true,y,"y is now true");
+
+				});
+
+				a.equals(1,1,"Numbers are equal");
+
+
+
+				// .then(function()
+				// {
+				//throw("An error!");
+
+				// }).then(function()
+				// {
+				//	throw("Never get here!");
+				// });
+				// then try a callback
+			 });
+			group.test("Small Test (#3), about 4",function(a) {
+				var x=0;
+
+				a.equals(2,wait(2),"A two second wait to show concurrent testing");
+			   // a.equals(3,wait(3),"Wait returns the parameter it was passed after a time");
+				a.equals(0,x,"x is zero");
+
+				a.then(function() {
+					x=2;
+					a.equals(2,x,"x is 2"); // 3rd assert: passes
+
+				});
+			});
+		});
+
+
+</script>
+	<p>
+<b>Test Test Page</b> <a href="#" id="startTest">Run Tests</a>
+
+</p>
+<div id="wrap" >
+</div>
+
+<div id="sample">
+Hello!!
+</div>
+</body>
+</html>

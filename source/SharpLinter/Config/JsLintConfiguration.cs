@@ -17,6 +17,13 @@ namespace JTC.SharpLinter.Config
         JavaScript=1,
         Html=2
     }
+    public enum Verbosity
+    {
+        DetailOnly=1,
+        Summary=2,
+        Debugging=3
+
+    }
 	/// <summary>
 	///  Represents configuring the Js Lint(er)
 	/// </summary>
@@ -35,18 +42,25 @@ namespace JTC.SharpLinter.Config
                     JsLintCode= sr.ReadToEnd();
                 }
             }
-            SetOption("maxerr", 99999);
+            JsLintFilePath = "Embedded (R06)";
+            SetOption("maxerr", 50);
             InputType = InputType.JavaScript;
+            IgnoreStart = "lint-ignore-start";
+            IgnoreEnd = "lint-ignore-end";
+            IgnoreFile = "lint-ignore-file";
+            Verbosity = Config.Verbosity.Summary;
 
 		}
         /// <summary>
-        /// The path of the global config file
+        /// The path of the global config file -- used only for reporting.
         /// </summary>
-        public string GlobalConfigFile
+        public string GlobalConfigFilePath
         {
             get;
             set;
         }
+        public string JsLintFilePath { get; set; }
+
         public InputType InputType { get; set; }
         /// <summary>
         /// The javascript code that will be used to parse the input file. 
@@ -108,7 +122,7 @@ namespace JTC.SharpLinter.Config
         /// <summary>
         /// Be verbose
         /// </summary>
-        public bool Verbose { get; set; }
+        public Verbosity Verbosity{ get; set; }
         /// <summary>
         /// Minimize the JS file and rewrite if no errors are reported using "MinimizeFileNameMask" to create a new file name
         /// </summary>
@@ -538,20 +552,6 @@ namespace JTC.SharpLinter.Config
             string data= File.ReadAllText(configFile);
             JsLintConfiguration config = ParseConfigFile(data,LinterType);
             MergeOptions(config);
-            //ConfigFileParser parser = new ConfigFileParser();
-            
-            //foreach (var kvp in parser.GetKVPSection("jslint"))
-            //{
-            //    SetOption(kvp.Key, kvp.Value);
-            //}
-            //foreach (var global in parser.GetValueSection("global",","))
-            //{
-            //    SetGlobal(global);
-            //}
-            //foreach (var exclude in parser.GetValueSection("exclude","\n,"))
-            //{
-            //    SetFileExclude(exclude);
-            //}
         }
 
 

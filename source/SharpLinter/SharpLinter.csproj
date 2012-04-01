@@ -59,6 +59,7 @@
     <Compile Include="Engines\Jint.cs" />
     <Compile Include="IJSEngineWrapper.cs" />
     <Compile Include="Engines\Neosis.cs" />
+    <Compile Include="LintDataCollector.cs" />
     <Compile Include="SharpLinterBatch.cs" />
     <Compile Include="ECMAErrorReporter.cs" />
     <Compile Include="SharpCompressor.cs" />
