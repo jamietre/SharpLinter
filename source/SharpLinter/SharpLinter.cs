@@ -74,47 +74,43 @@ namespace JTC.SharpLinter
 
         protected JsLintConfiguration Configuration;
        
-        
-        /// <summary>
-        /// Returns true if a script appears on this line. 
-        /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        protected bool isStartScript(string text)
-        {
-            string expr =  @"<script (.|\n)*?type\s*=\s*[""|']text/javascript[""|'](.|\n)*?>";
-            string ignore = @"<script (.|\n)*?src\s*=\s*[""|'].*?[""|'](.|\n)*?>";
-
-            var mustMatch= new Regex(expr);
-            var mustNotMatch = new Regex(ignore);
-            bool result = false;
-            var matches = mustMatch.Matches(text);
-            if (matches.Count>0)
-            {
-                // just check the last one, if for some reason there's a block
-                // opened & closed and followed by an include all on one line, then
-                // just don't deal with it.
-                result = !mustNotMatch.IsMatch(matches[matches.Count-1].Value);
-            }
-            return result;
-        }
-        protected bool isEndScript(string text)
-        {
-            string expr = @"</script.*?>";
-            var regex = new Regex(expr);
-            return regex.IsMatch(text);
-        }
-
+      
         #endregion
 
+        #region public methods
+
+        protected void Configure()
+        {
+            _isStartScriptRegex = new Regex(@"<script (.|\n)*?type\s*=\s*[""|']text/javascript[""|'](.|\n)*?>");
+            // skip anything with a src=".."
+            _isStartScriptRegexFail = new Regex(@"<script (.|\n)*?src\s*=\s*[""|'].*?[""|'](.|\n)*?>");
+            if (!String.IsNullOrEmpty(Configuration.IgnoreEnd) &&
+                !String.IsNullOrEmpty(Configuration.IgnoreStart))
+            {
+                _isIgnoreStart = new Regex(@"/\\s*" + Configuration.IgnoreStart + @"\s*\*/");
+                _isIgnoreEnd = new Regex(@"/\\s*" + Configuration.IgnoreEnd + @"\s*\*/");
+                isIgnoreStart = isIgnoreStartImpl;
+                isIgnoreEnd = isIgnoreEndImpl;
+            }
+            else
+            {
+                isIgnoreStart = notImplemented;
+                isIgnoreEnd = notImplemented;
+            }
+            if (!String.IsNullOrEmpty(Configuration.IgnoreFile))
+            {
+                _isIgnoreFile = new Regex(@"/\\s*" + Configuration.IgnoreFile + @"\s*\*/");
+                isIgnoreFile = isIgnoreFileImpl;
+            }
+            else
+            {
+                isIgnoreFile = notImplemented;
+            }
+        }
         public JsLintResult Lint(string javascript)
         {
             StringBuilder finalJs = new StringBuilder();
-            if (String.IsNullOrEmpty(Configuration.IgnoreEnd) ||
-            String.IsNullOrEmpty(Configuration.IgnoreStart) ||
-                String.IsNullOrEmpty(Configuration.IgnoreFile)) {
-                    throw new Exception("The configuration requres values for IgnoreStart, IgnoreEnd, and IgnoreFile.");
-            }
+            Configure();
 
             lock (_lock)
             {
@@ -148,26 +144,25 @@ namespace JTC.SharpLinter
                             ignoreLines = true;
                         }
 
-                        if (text.IndexOf("/*" + (ignoreErrors ? 
-                            Configuration.IgnoreEnd : 
-                            Configuration.IgnoreStart) + "*/") >= 0)
+                        if (!ignoreErrors  && isIgnoreStart(text))
                         {
-                            if (!ignoreErrors)
-                            {
-                                startSkipLine = line;
-                                ignoreErrors = true;
-                                hasSkips = true;
-                            }
-                            else
-                            {
-                                ignoreErrors = false;
-                            }
+                            startSkipLine = line;
+                            ignoreErrors = true;
+                            hasSkips = true;
+                        } 
+                        // always check for end - if they both appear on a line, don't do anything. should 
+                        // always fall back to continuing to check.
+                        if (ignoreErrors && isIgnoreEnd(text)) 
+                        {
+                            ignoreErrors = false;
                         }
                         LineExclusion.Add(ignoreErrors);
 
                         finalJs.AppendLine(ignoreLines ? "" : text);
 
-                        if (ignoreLines && Configuration.InputType == InputType.Html && isStartScript(text))
+                        if (ignoreLines 
+                            && Configuration.InputType == InputType.Html 
+                            && isStartScript(text))
                         {
                             ignoreLines = false;
                         }
@@ -180,7 +175,7 @@ namespace JTC.SharpLinter
                     JsLintData err = new JsLintData();
                     err.Line = startSkipLine;
                     err.Character = 0;
-                    err.Reason = "An ignore start marker was found, but there was no ignore-end. Nothing was ignored.";
+                    err.Reason = "An ignore-start marker was found, but there was no ignore-end. Nothing was ignored.";
                     dataCollector.Errors.Add(err);
 
                     hasSkips = false;
@@ -243,10 +238,68 @@ namespace JTC.SharpLinter
                 
                 return result;
             }
-            
-            
+
+
         }
 
-	
+        #endregion
+
+        #region private methods
+
+
+        Regex _isStartScriptRegex= new Regex(@"<script (.|\n)*?type\s*=\s*[""|']text/javascript[""|'](.|\n)*?>");
+        // skip anything with a src=".."
+        Regex _isStartScriptRegexFail = new Regex(@"<script (.|\n)*?src\s*=\s*[""|'].*?[""|'](.|\n)*?>");
+
+
+        /// <summary>
+        /// Returns true if a script appears on this line. 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        protected bool isStartScript(string text)
+        {
+
+            bool result = false;
+            var matches = _isStartScriptRegex.Matches(text);
+            if (matches.Count > 0)
+            {
+                // just check the last one, if for some reason there's a block
+                // opened & closed and followed by an include all on one line, then
+                // just don't deal with it.
+                result = !_isStartScriptRegexFail.IsMatch(matches[matches.Count - 1].Value);
+            }
+            return result;
+        }
+        Regex _isEndScriptRegex = new Regex(@"</script.*?>");
+        protected bool isEndScript(string text)
+        {
+            return _isEndScriptRegex.IsMatch(text);
+        }
+
+        Regex _isIgnoreStart;
+        Regex _isIgnoreEnd;
+        Regex _isIgnoreFile;
+
+        protected bool notImplemented(string what)
+        {
+            return false;
+        }
+        protected Func<string, bool> isIgnoreStart;
+        protected bool isIgnoreStartImpl(string text)
+        {
+            return _isIgnoreStart.IsMatch(text);
+        }
+        protected Func<string, bool> isIgnoreEnd;
+        protected bool isIgnoreEndImpl(string text)
+        {
+            return _isIgnoreEnd.IsMatch(text);
+        }
+        protected Func<string,bool> isIgnoreFile;
+        protected bool isIgnoreFileImpl(string text)
+        {
+            return _isIgnoreFile.IsMatch(text);
+        }
+        #endregion
     }
 }

@@ -51,6 +51,7 @@ namespace JTC.SharpLinter.Config
             Verbosity = Config.Verbosity.Summary;
 
 		}
+        protected bool _MinimizeOnSuccess;
         /// <summary>
         /// The path of the global config file -- used only for reporting.
         /// </summary>
@@ -126,7 +127,16 @@ namespace JTC.SharpLinter.Config
         /// <summary>
         /// Minimize the JS file and rewrite if no errors are reported using "MinimizeFileNameMask" to create a new file name
         /// </summary>
-        public bool MinimizeOnSuccess { get; set; }
+        public bool MinimizeOnSuccess {
+            get
+            {
+                return _MinimizeOnSuccess && InputType == InputType.JavaScript;
+            }
+            set
+            {
+                _MinimizeOnSuccess = value;
+            }
+        }
         /// <summary>
         /// When minimizing, pass the first comment block /* ... */ through to the output
         /// </summary>

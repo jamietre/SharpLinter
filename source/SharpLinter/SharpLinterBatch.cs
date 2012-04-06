@@ -110,10 +110,14 @@ namespace JTC.SharpLinter.Config
                     }
                     SummaryInfo.Add(leadIn);
                 }
-                
 
                 SharpCompressor compressor = new SharpCompressor();
-                if (Configuration.YUIValidation)
+
+                // We always check for YUI errors when there were no lint errors and
+                // we are compressing. Otherwise it might not compress.
+
+                if (Configuration.YUIValidation || 
+                    (!hasErrors && Configuration.MinimizeOnSuccess))
                 {
                     compressor.Clear();
                     compressor.AllowEval = Configuration.GetOption<bool>("evil");
@@ -127,7 +131,6 @@ namespace JTC.SharpLinter.Config
                         YUIErrors = true;
                         foreach (var error in compressor.Errors)
                         {
-                            error.FilePath = file;
                             fileErrors.Add(error);
                         }
                         
@@ -140,7 +143,7 @@ namespace JTC.SharpLinter.Config
                 {
                     successLine = String.Format("{0}: No errors found.", file);
 
-                    if (Configuration.MinimizeOnSuccess && Configuration.InputType==InputType.JavaScript)
+                    if (Configuration.MinimizeOnSuccess)
                     {
                         compressor.Clear();
                         compressor.Input = javascript;

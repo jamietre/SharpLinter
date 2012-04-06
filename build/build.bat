@@ -1,2 +1,2 @@
-sharpbatcher -v -c sharplinter-batch.conf
+sharpbatcher -v -c sharplinter-batch.js
 pause

@@ -30,22 +30,8 @@ namespace JTC.SharpLinter
         {
 
             Clear();
-            Yahoo.Yui.Compressor.JavaScriptCompressor compressor;
-
-            try
-            {
-                compressor = new JavaScriptCompressor(javascript, true, Encoding.UTF8,
-                System.Globalization.CultureInfo.CurrentCulture,
-                AllowEval, Reporter);
-                
-                string compressed = compressor.Compress(true,true,false,80);
-            }
-            catch
-            {
-            }
-            return Reporter.Errors.Count==0;
-
-
+            string compressed;
+            return compressYUI(javascript, out compressed);
         }
         public void Clear()
         {
@@ -121,14 +107,10 @@ namespace JTC.SharpLinter
 
             if (CompressorType == CompressorType.yui || CompressorType == CompressorType.best)
             {
+                if (!compressYUI(javascript, out compressedYui)) {
 
-                var reporter = new LinterECMAErrorReporter();
-                Yahoo.Yui.Compressor.JavaScriptCompressor compressor;
-                compressor = new JavaScriptCompressor(javascript, true, Encoding.UTF8,
-                System.Globalization.CultureInfo.CurrentCulture,
-                    true,
-                    reporter);
-                compressedYui = compressor.Compress(true, true, false, 80);
+                    throw new Exception("The YUI compressor reported errors, which is strange because we already did a dry run to determine the best compressor.");
+                }
             }
             if (CompressorType == CompressorType.packer || CompressorType == CompressorType.best)
             {
@@ -140,8 +122,32 @@ namespace JTC.SharpLinter
 
             Output = header + (finalPacker == CompressorType.yui ? compressedYui : compressedPacker);
 
-            Statistics = finalPacker.ToString() + ": " + javascript.Length + "/" + Output.Length + ", " + Math.Round(100 * ((decimal)Output.Length / (decimal)javascript.Length), 0) + "%";
+            Statistics = finalPacker.ToString() + ": " + javascript.Length + "/" + Output.Length + ", " 
+                + Math.Round(100 * ((decimal)Output.Length / (decimal)javascript.Length), 0) + "%";
             return Success;
+        }
+
+        protected bool compressYUI(string input, out string output)
+        {
+            bool success;
+            try
+            {
+                var reporter = new LinterECMAErrorReporter();
+                Yahoo.Yui.Compressor.JavaScriptCompressor compressor;
+                compressor = new JavaScriptCompressor(input, true, Encoding.UTF8,
+                System.Globalization.CultureInfo.CurrentCulture,
+                    AllowEval,
+                    reporter);
+                output = compressor.Compress(true, true, false, 80);
+                success = Reporter.Errors.Count == 0;
+            }
+            catch
+            {
+                output = "";
+                success = false;
+            }
+
+            return success;
         }
 
     }
