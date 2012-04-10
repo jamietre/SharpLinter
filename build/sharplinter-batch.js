@@ -14,10 +14,10 @@ config={
     },
     {
         input: "sharplinter.exe,jtc.sharplinter.dll",
-        outputroot: "c:/applications/jslint",
+        outputroot: "/applications/jslint",
         output: 
         { 
-            target:"c:/applications/jslint",
+            target:"/applications/jslint",
             action: "copy"
         }
 

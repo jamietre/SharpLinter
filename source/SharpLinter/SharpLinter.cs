@@ -87,8 +87,8 @@ namespace JTC.SharpLinter
             if (!String.IsNullOrEmpty(Configuration.IgnoreEnd) &&
                 !String.IsNullOrEmpty(Configuration.IgnoreStart))
             {
-                _isIgnoreStart = new Regex(@"/\\s*" + Configuration.IgnoreStart + @"\s*\*/");
-                _isIgnoreEnd = new Regex(@"/\\s*" + Configuration.IgnoreEnd + @"\s*\*/");
+                _isIgnoreStart = new Regex(@"/\*\s*" + Configuration.IgnoreStart + @"\s*\*/");
+                _isIgnoreEnd = new Regex(@"/\*\s*" + Configuration.IgnoreEnd + @"\s*\*/");
                 isIgnoreStart = isIgnoreStartImpl;
                 isIgnoreEnd = isIgnoreEndImpl;
             }

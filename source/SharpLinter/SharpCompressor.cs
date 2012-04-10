@@ -138,7 +138,7 @@ namespace JTC.SharpLinter
                 System.Globalization.CultureInfo.CurrentCulture,
                     AllowEval,
                     reporter);
-                output = compressor.Compress(true, true, false, 80);
+                output = compressor.Compress(true, true,false, 80);
                 success = Reporter.Errors.Count == 0;
             }
             catch
