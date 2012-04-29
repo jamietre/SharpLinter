@@ -262,6 +262,8 @@ Now you're done. Set up a keyboard shortcut, and it will process the active file
 
 
 ### Changes
+    1.1.1   2012-04-29 
+            Bugfix - output from jslint crashing Neosis wrapper (Issue #3)
 	1.1		2012-04-01	 
 			Add more verbosity options. Add --noglobal option.
     		Bugfix for "maxerr" and HTML files

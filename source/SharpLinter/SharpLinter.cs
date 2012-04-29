@@ -43,15 +43,24 @@ namespace JTC.SharpLinter
             _context.Run(JSLint);
 
             string func = Configuration.LinterType == LinterType.JSHint ? "JSHINT" : "JSLINT";
+            
+            // a bug (apparently) in the Noesis wrapper causes a StackOverflow exception when returning data sometimes.
+            // not sure why but removing "functions" from the returned object resolves it. we don't need that
+            // anyway.
+
             string run =
                 @"lintRunner = function (dataCollector, javascript, options) {
-                    JSLINT(javascript,options);
+                    var data, result = JSLINT(javascript,options);
                     
-                    var data = JSLINT.data();
-                    if  (data) {
+                    if (!result) {
+                        data = JSLINT.data();
+                        if (data.functions) {
+                            delete data.functions;
+                        }
                         dataCollector.ProcessData(data);
                     }
-                };".Replace("JSLINT", func);
+                };
+            ".Replace("JSLINT", func);
             _context.Run(run);
         }
 
