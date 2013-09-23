@@ -328,7 +328,25 @@ namespace JTC.SharpLinter.Config
                 }
                 else
                 {
-                    Options[option] = value.ToString();
+                    // we might be processing a value that can be a bool as well as a string, so try booleanising it first
+                    // (this is used for example for 'unused' in JSHint, which can be either true, false, "vars" or "strict")
+                    if (value is bool)
+                    {
+                        Options[option] = value;
+                    }
+                    else
+                    {
+                        bool? val;
+                        val = Utility.StringToBool(value.ToString(), null);
+                        if (val == null)
+                        {
+                            Options[option] = value.ToString();
+                        }
+                        else
+                        {
+                            Options[option] = (bool)val;
+                        }
+                    }
                 }
             } else {
                 throw new Exception("Unknown option '" + option + "'");
@@ -460,7 +478,7 @@ namespace JTC.SharpLinter.Config
             { "iterator" , BoolOpt("if the `__iterator__` property should be disallowed") },
             { "jquery" , BoolOpt("if jQuery globals should be predefined") },
             { "lastsemic" , BoolOpt("if semicolons may be ommitted for the trailing statements inside of a one-line blocks.") },
-            { "latedef" , BoolOpt("if the use before definition should not be tolerated") },
+            { "latedef" , Tuple.Create<string,Type>("if the use before definition should not be tolerated", typeof(object)) },
             { "laxbreak", BoolOpt("if line breaks should not be checked") },
             { "laxcomma", BoolOpt(" if line breaks should not be checked around commas") },
             { "loopfunc" , BoolOpt("if functions should be allowed to be defined within loops") },
@@ -491,7 +509,7 @@ namespace JTC.SharpLinter.Config
             { "shadow" , BoolOpt("if variable shadowing should be tolerated") },
             { "trailing" , BoolOpt("if trailing whitespace rules apply") },
             { "undef" , BoolOpt("if variables should be declared before used") },
-            { "unused" , BoolOpt("show unused local variables") },
+            { "unused" , Tuple.Create<string,Type>("show unused local variables", typeof(object)) },
             { "validthis" , BoolOpt("if \"this\" inside a non-constructor function is valid") },
             { "white" , BoolOpt("if strict whitespace rules apply") },
             { "wsh" , BoolOpt("f the Windows Scripting Host environment globals should be predefined") },
