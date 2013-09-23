@@ -124,7 +124,19 @@ namespace JTC.SharpLinter
             lock (_lock)
             {
                 bool hasSkips = false;
-				LintDataCollector dataCollector = new LintDataCollector(Configuration.GetOption<bool>("unused"));
+                bool hasUnused = false;
+                if (Configuration.LinterType == LinterType.JSLint)
+                {
+                    hasUnused = Configuration.GetOption<bool>("unused");
+                }
+                else if (Configuration.LinterType == LinterType.JSLint)
+                {
+                    // we consider the "unused" option to be activated if the config value is either empty
+                    // (since the default is "true") or anything other than "false"
+                    string unusedConfig = Configuration.GetOption<string>("unused");
+                    hasUnused = string.IsNullOrEmpty(unusedConfig) || unusedConfig != "false";
+                }
+                LintDataCollector dataCollector = new LintDataCollector(hasUnused);
 
                 LineExclusion = new List<bool>();
                 // lines are evaluated, but errors are ignored: we want to use this for blocks excluded 
