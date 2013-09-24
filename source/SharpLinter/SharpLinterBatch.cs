@@ -17,7 +17,7 @@ namespace JTC.SharpLinter.Config
         {
             get
             {
-                if (!String.IsNullOrEmpty(Configuration.OutputFormat))
+                if (HasCustomOutputFormat())
                 {
                     return Configuration.OutputFormat;
                 }
@@ -209,8 +209,13 @@ namespace JTC.SharpLinter.Config
 
                 foreach (JsLintData error in allErrors)
                 {
-                    string character = error.Character>=0 ? "at character " + error.Character : String.Empty;
-                    Console.WriteLine(string.Format(OutputFormat, error.FilePath, error.Line, error.Source, error.Reason,character));
+                    string character = error.Character.ToString();
+                    // add a small introducing string before the character number if we are using the default output string
+                    if (!HasCustomOutputFormat())
+                    {
+                        character = error.Character >= 0 ? "at character " + error.Character : String.Empty;
+                    }
+                    Console.WriteLine(string.Format(OutputFormat, error.FilePath, error.Line, error.Source, error.Reason, character));
                 }
             }
             if (Configuration.Verbosity == Verbosity.Debugging)
@@ -245,6 +250,11 @@ namespace JTC.SharpLinter.Config
         private int LintDataComparer(JsLintData x, JsLintData y)
         {
             return x.Line.CompareTo(y.Line);
+        }
+
+        private bool HasCustomOutputFormat()
+        {
+            return !String.IsNullOrEmpty(Configuration.OutputFormat);
         }
     }
 }
