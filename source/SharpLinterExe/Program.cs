@@ -115,6 +115,7 @@ namespace JTC.SharpLinter
                     {
                         case "-of":
                             finalConfig.OutputFormat = value.Replace("\\r", "\r").Replace("\\n", "\n");
+                            i++;
                             break;
                         case "-i":
                             finalConfig.IgnoreStart = value;
