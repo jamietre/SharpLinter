@@ -21,10 +21,11 @@ namespace JTC.SharpLinter
     class SharpLinterExe
     {
 
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
            
             bool readKey = false;
+            int errorCount = 0;
             try
             {
                 Lazy<JsLintConfiguration> _Configuration = new Lazy<JsLintConfiguration>();
@@ -83,7 +84,7 @@ namespace JTC.SharpLinter
                     Console.WriteLine("E.g.");
                     Console.WriteLine("JsLint -f input.js -f input2.js");
                     Console.WriteLine("JsLint -f input.js -o \"evil=False,eqeqeq,predef=Microsoft System\"");
-                    return;
+                    return 0;
                 }
 
                 //string commandlineConfig = String.Empty;
@@ -262,7 +263,7 @@ namespace JTC.SharpLinter
                 {
                     SharpLinterBatch batch = new SharpLinterBatch(finalConfig);
                     batch.FilePaths = filePaths;
-                    batch.Process();
+                    errorCount = batch.Process();
                 }
                 catch (Exception e)
                 {
@@ -284,8 +285,8 @@ namespace JTC.SharpLinter
             {
                 Console.ReadKey();
             }
-            
 
+            return errorCount == 0 ? 0 : 1;
         }
 
         #region support functions
