@@ -31,19 +31,23 @@ namespace JTC.SharpLinter.Config
                 _OutputFormat = value;
             }
         }
+
         private string _OutputFormat;
         public IEnumerable<PathInfo> FilePaths { get; set; }
+
         public SharpLinterBatch(JsLintConfiguration configuration)
         {
             Configuration = configuration;
             OutputFormat = "{0}({1}): ({2}) {3} {4}";
         }
+
         protected string StringOrMissingDescription(string text)
         {
             return String.IsNullOrEmpty(text) ? "[None Specified]" : text;
 
         }
-        public void Process()
+
+        public int Process()
         {
             SharpLinter lint = new SharpLinter(Configuration);
             List<string> SummaryInfo = new List<string>();
@@ -223,14 +227,10 @@ namespace JTC.SharpLinter.Config
                 Console.WriteLine();
                 Console.WriteLine("SharpLinter: Finished processing at {0:MM/dd/yy H:mm:ss zzz}. Processed {1} files.", DateTime.Now, fileCount);
             }
-            //else
-            //{
-            //    if (allErrors.Count == 0)
-            //    {
-            //        Console.WriteLine("SharpLinter: Finished processing {0} file(s) at {1:MM/dd/yy H:mm:ss zzz}, no errors found.", fileCount, DateTime.Now);
-            //    }
-            //}
+
+            return allErrors.Count;
         }
+
         private string MapFileName(string path, string mask)
         {
             if (mask.OccurrencesOf("*") != 1)
